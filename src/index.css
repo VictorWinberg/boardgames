@@ -2,19 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Shared shape: RGB triples for Tailwind rgb(var(--x) / <alpha>) */
+
 @layer base {
+  /* Tavern Hearth — warm leather, ember glow, candlelit shelf */
   :root {
-    --background: 15 23 42;
-    --foreground: 248 250 252;
-    --card: 30 41 59;
-    --card-foreground: 248 250 252;
-    --muted: 51 65 85;
-    --muted-foreground: 148 163 184;
-    --primary: 251 191 36;
-    --primary-foreground: 15 23 42;
-    --border: 71 85 105;
-    --ring: 251 191 36;
-    --radius: 0.75rem;
+    --font-sans: "Spectral", ui-serif, Georgia, "Times New Roman", serif;
+    --font-display: "Cinzel", ui-serif, Georgia, serif;
+    --background: 28 14 12;
+    --foreground: 255 241 230;
+    --card: 48 26 22;
+    --card-foreground: 255 241 230;
+    --muted: 82 44 36;
+    --muted-foreground: 214 176 158;
+    --primary: 255 153 92;
+    --primary-foreground: 28 14 12;
+    --border: 120 68 52;
+    --ring: 255 153 92;
+    --radius: 0.55rem;
+    --app-vignette: radial-gradient(
+      ellipse 100% 60% at 50% 100%,
+      rgb(120 40 24 / 0.4) 0%,
+      transparent 55%
+    );
+    --app-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+    --header-patina: linear-gradient(
+      180deg,
+      rgb(56 30 26 / 0.94) 0%,
+      rgb(34 18 16 / 0.9) 100%
+    );
+    --card-shadow:
+      0 18px 42px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 200 160 / 0.08);
   }
 }
 
@@ -23,8 +41,32 @@
     @apply border-border;
   }
 
+  html {
+    font-family: var(--font-sans);
+  }
+
   body {
-    @apply min-h-screen bg-background text-foreground antialiased;
+    @apply min-h-screen text-foreground antialiased;
+    background-color: rgb(var(--background));
+    background-image: var(--app-vignette), var(--app-noise);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .app-header-bar {
+    background-image: var(--header-patina);
+    box-shadow: 0 1px 0 rgb(var(--border) / 0.35);
+  }
+
+  .app-title {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .board-card {
+    box-shadow: var(--card-shadow);
   }
 }
 

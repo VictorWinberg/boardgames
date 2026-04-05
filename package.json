@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "sync:bgg": "node scripts/sync-bgg.mjs",
+    "images:geekdo": "node scripts/fill-images-geekdo.mjs",
     "lint": "eslint ."
   },
   "dependencies": {

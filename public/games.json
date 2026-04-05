@@ -1,5 +1,626 @@
 {
-  "syncedAt": null,
-  "username": null,
-  "games": []
+  "syncedAt": "2026-04-05T19:47:20.964Z",
+  "username": "VictorWinberg",
+  "games": [
+    {
+      "id": "173346",
+      "name": "7 Wonders Duel",
+      "yearPublished": 2015,
+      "thumbnail": "https://cf.geekdo-images.com/zdagMskTF7wJBPjX74XsRw__micro@2x/img/ffhB_rX5QXz6lLSmr0hVciOCETs=/fit-in/128x128/filters:strip_icc()/pic2576399.jpg",
+      "image": "https://cf.geekdo-images.com/zdagMskTF7wJBPjX74XsRw__large/img/r5HnHGWW0axqgUxFfnAQDO_vSXs=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2576399.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 2,
+      "playingTime": 30,
+      "minPlayTime": 30,
+      "maxPlayTime": 30,
+      "averageWeight": 2.2273,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Card Drafting",
+        "Set Collection",
+        "Simultaneous Action Selection"
+      ]
+    },
+    {
+      "id": "205637",
+      "name": "Arkham Horror: The Card Game",
+      "yearPublished": 2016,
+      "thumbnail": "https://cf.geekdo-images.com/B5F5ulz0UivNgrI9Ky0euA__micro@2x/img/_oHE3Azq8jJbzpkGfGirbc3r4SA=/fit-in/128x128/filters:strip_icc()/pic3122349.jpg",
+      "image": "https://cf.geekdo-images.com/B5F5ulz0UivNgrI9Ky0euA__large/img/yiOKqtP-wNIDhqqTCZZ7n43Vbj0=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic3122349.jpg",
+      "minPlayers": 1,
+      "maxPlayers": 2,
+      "playingTime": 120,
+      "minPlayTime": 60,
+      "maxPlayTime": 120,
+      "averageWeight": 3.5668,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Campaign / Battle Card Driven",
+        "Cooperative Game",
+        "Deck, Bag, and Pool Building",
+        "Hand Management",
+        "Variable Player Powers"
+      ]
+    },
+    {
+      "id": "367396",
+      "name": "Avalon: Big Box",
+      "yearPublished": 2022,
+      "thumbnail": "https://cf.geekdo-images.com/uI6LtXOb-Yed0-cUpQ9lew__micro@2x/img/L1uN5TRYpyYdInIRlABQbM5mtJM=/fit-in/128x128/filters:strip_icc()/pic7037062.png",
+      "image": "https://cf.geekdo-images.com/uI6LtXOb-Yed0-cUpQ9lew__large/img/KzSHtHBRfNkeGMEZZc2zswy56Dk=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic7037062.png",
+      "minPlayers": 5,
+      "maxPlayers": 10,
+      "playingTime": 30,
+      "minPlayTime": 30,
+      "maxPlayTime": 30,
+      "averageWeight": 2.1765,
+      "numPlays": 0,
+      "categories": [
+        "Strategy",
+        "Deduction"
+      ],
+      "mechanics": []
+    },
+    {
+      "id": "230802",
+      "name": "Azul",
+      "yearPublished": 2017,
+      "thumbnail": "https://cf.geekdo-images.com/tz19PfklMdAdjxV9WArraA__micro@2x/img/UfWU9eA613gP_dzjr4G4iJSEVeA=/fit-in/128x128/filters:strip_icc()/pic3718275.jpg",
+      "image": "https://cf.geekdo-images.com/tz19PfklMdAdjxV9WArraA__large/img/e5IJxTYvZIm5sLF16f5pcyG_fIw=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic3718275.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 4,
+      "playingTime": 45,
+      "minPlayTime": 30,
+      "maxPlayTime": 45,
+      "averageWeight": 1.7752,
+      "numPlays": 0,
+      "categories": [
+        "Family"
+      ],
+      "mechanics": [
+        "Open Drafting",
+        "Pattern Building",
+        "Set Collection",
+        "Tile Placement"
+      ]
+    },
+    {
+      "id": "281549",
+      "name": "Beast",
+      "yearPublished": 2023,
+      "thumbnail": "https://cf.geekdo-images.com/-9NLgO6ASOHgZtMtamqjxw__micro@2x/img/q6bHq4B--VSStfDLXbOO-Nu8zcA=/fit-in/128x128/filters:strip_icc()/pic6418160.png",
+      "image": "https://cf.geekdo-images.com/-9NLgO6ASOHgZtMtamqjxw__large/img/Cm3KMBPge7Vh94tUHPNZlp8Rq28=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic6418160.png",
+      "minPlayers": 2,
+      "maxPlayers": 4,
+      "playingTime": 120,
+      "minPlayTime": 60,
+      "maxPlayTime": 120,
+      "averageWeight": 3.0548,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Action Drafting",
+        "Closed Drafting",
+        "Hand Management",
+        "Hidden Movement",
+        "Point to Point Movement",
+        "Secret Unit Deployment",
+        "Team-Based Game",
+        "Variable Player Powers"
+      ]
+    },
+    {
+      "id": "170216",
+      "name": "Blood Rage",
+      "yearPublished": 2015,
+      "thumbnail": "https://cf.geekdo-images.com/HkZSJfQnZ3EpS214xtuplg__micro@2x/img/Pt889CAtVPNy2JXqTsqdn6q-hNA=/fit-in/128x128/filters:strip_icc()/pic2439223.jpg",
+      "image": "https://cf.geekdo-images.com/HkZSJfQnZ3EpS214xtuplg__large/img/RBiaX-01NaTP0EvPppqSGYGjVsA=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2439223.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 5,
+      "playingTime": 90,
+      "minPlayTime": 60,
+      "maxPlayTime": 90,
+      "averageWeight": 2.8809,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Action Retrieval",
+        "Area Majority / Influence",
+        "Auction: Once Around",
+        "Card Drafting",
+        "Variable Player Powers"
+      ]
+    },
+    {
+      "id": "224517",
+      "name": "Brass: Birmingham",
+      "yearPublished": 2018,
+      "thumbnail": "https://cf.geekdo-images.com/x3zxjr-Vw5iU4yDPg70Jgw__micro@2x/img/BT_kmG6_DSc5GB-ms0kdERNNj-o=/fit-in/128x128/filters:strip_icc()/pic3490053.jpg",
+      "image": "https://cf.geekdo-images.com/x3zxjr-Vw5iU4yDPg70Jgw__large/img/_scMMV_Vn3hpOKsBux0nP9sLEoI=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic3490053.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 4,
+      "playingTime": 120,
+      "minPlayTime": 60,
+      "maxPlayTime": 120,
+      "averageWeight": 3.8618,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Chaining",
+        "Hand Management",
+        "Income",
+        "Loans",
+        "Network and Route Building",
+        "Tile Placement"
+      ]
+    },
+    {
+      "id": "822",
+      "name": "Carcassonne",
+      "yearPublished": 2000,
+      "thumbnail": "https://cf.geekdo-images.com/okM0dq_bEXnbyQTOvHfwRA__micro@2x/img/9YJHhX16-Zji6NS5EpvvJ9KCPoU=/fit-in/128x128/filters:strip_icc()/pic6544250.png",
+      "image": "https://cf.geekdo-images.com/okM0dq_bEXnbyQTOvHfwRA__large/img/RmoGPJ5a3VBrBwYE30C0MuI1MJY=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic6544250.png",
+      "minPlayers": 2,
+      "maxPlayers": 5,
+      "playingTime": 45,
+      "minPlayTime": 30,
+      "maxPlayTime": 45,
+      "averageWeight": 1.8856,
+      "numPlays": 0,
+      "categories": [
+        "Family"
+      ],
+      "mechanics": []
+    },
+    {
+      "id": "205398",
+      "name": "Citadels",
+      "yearPublished": 2016,
+      "thumbnail": "https://cf.geekdo-images.com/sHd0jkZZLDgixHjAXtn7kA__micro@2x/img/6EY-qKwGL2Pu4S1YtTcqosn8Lmw=/fit-in/128x128/filters:strip_icc()/pic3119514.jpg",
+      "image": "https://cf.geekdo-images.com/sHd0jkZZLDgixHjAXtn7kA__large/img/Ks2akEXGO-gfyCo1wYknydXmxMY=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic3119514.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 8,
+      "playingTime": 60,
+      "minPlayTime": 30,
+      "maxPlayTime": 60,
+      "averageWeight": 2.052,
+      "numPlays": 0,
+      "categories": [
+        "Strategy",
+        "Party"
+      ],
+      "mechanics": [
+        "Card Drafting",
+        "Player Elimination",
+        "Take That",
+        "Variable Player Powers"
+      ]
+    },
+    {
+      "id": "178900",
+      "name": "Codenames",
+      "yearPublished": 2015,
+      "thumbnail": "https://cf.geekdo-images.com/F_KDEu0GjdClml8N7c8Imw__micro@2x/img/Dp7AyHzOLHaTkW6njrSCY5CZf_8=/fit-in/128x128/filters:strip_icc()/pic2582929.jpg",
+      "image": "https://cf.geekdo-images.com/F_KDEu0GjdClml8N7c8Imw__large/img/U_1slclNoTv-YoNRTvtM7LNOVOQ=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2582929.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 8,
+      "playingTime": 15,
+      "minPlayTime": 15,
+      "maxPlayTime": 15,
+      "averageWeight": 1.2561,
+      "numPlays": 0,
+      "categories": [
+        "Party"
+      ],
+      "mechanics": [
+        "Communication Limits",
+        "Memory",
+        "Team-Based Game"
+      ]
+    },
+    {
+      "id": "225694",
+      "name": "Decrypto",
+      "yearPublished": 2018,
+      "thumbnail": "https://cf.geekdo-images.com/hHZWXnUTMYDd_KTAM6Jwlw__micro@2x/img/irrqlyfw2PuHlH7TL30KQv1pE1w=/fit-in/128x128/filters:strip_icc()/pic3759421.jpg",
+      "image": "https://cf.geekdo-images.com/hHZWXnUTMYDd_KTAM6Jwlw__large/img/ALUXlHpakIrWZA_zPzrG9CeOSHc=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic3759421.jpg",
+      "minPlayers": 3,
+      "maxPlayers": 8,
+      "playingTime": 45,
+      "minPlayTime": 15,
+      "maxPlayTime": 45,
+      "averageWeight": 1.8257,
+      "numPlays": 0,
+      "categories": [
+        "Party"
+      ],
+      "mechanics": [
+        "Communication Limits",
+        "Pattern Recognition",
+        "Team-Based Game"
+      ]
+    },
+    {
+      "id": "36218",
+      "name": "Dominion",
+      "yearPublished": 2008,
+      "thumbnail": "https://cf.geekdo-images.com/1lvJpRl-PB3gYJv88FksLg__micro@2x/img/UIkbOrSlR0IpfAEI9pU7x9ZEAuU=/fit-in/128x128/filters:strip_icc()/pic360398.jpg",
+      "image": "https://cf.geekdo-images.com/1lvJpRl-PB3gYJv88FksLg__large/img/_k5JPdfmCjiRuk8LyHU5cTkcInI=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic360398.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 4,
+      "playingTime": 30,
+      "minPlayTime": 30,
+      "maxPlayTime": 30,
+      "averageWeight": 2.3443,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": []
+    },
+    {
+      "id": "199792",
+      "name": "Everdell",
+      "yearPublished": 2018,
+      "thumbnail": "https://cf.geekdo-images.com/fjE7V5LNq31yVEW_yuqI-Q__micro@2x/img/dtsxrZo0LW8Q0nJSrYevGP6aCvA=/fit-in/128x128/filters:strip_icc()/pic3918905.png",
+      "image": "https://cf.geekdo-images.com/fjE7V5LNq31yVEW_yuqI-Q__large/img/uCklaKWtTCAsFn7qdjjoDgNUxNI=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic3918905.png",
+      "minPlayers": 1,
+      "maxPlayers": 4,
+      "playingTime": 80,
+      "minPlayTime": 40,
+      "maxPlayTime": 80,
+      "averageWeight": 2.8337,
+      "numPlays": 0,
+      "categories": [
+        "Family",
+        "Strategy"
+      ],
+      "mechanics": [
+        "Card Drafting",
+        "Hand Management",
+        "Open Drafting",
+        "Set Collection",
+        "Tableau Building",
+        "Worker Placement"
+      ]
+    },
+    {
+      "id": "148949",
+      "name": "Istanbul",
+      "yearPublished": 2014,
+      "thumbnail": "https://cf.geekdo-images.com/PHH9Mreen2sBcxV6ZsE3ew__micro@2x/img/QVcSIE16JbGPK-xKhl-m53zDVHc=/fit-in/128x128/filters:strip_icc()/pic1885326.jpg",
+      "image": "https://cf.geekdo-images.com/PHH9Mreen2sBcxV6ZsE3ew__large/img/HwhvrYnfrvtGpfdEBKe7I_Q_86s=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic1885326.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 5,
+      "playingTime": 60,
+      "minPlayTime": 40,
+      "maxPlayTime": 60,
+      "averageWeight": 2.5831,
+      "numPlays": 0,
+      "categories": [
+        "Family",
+        "Strategy"
+      ],
+      "mechanics": []
+    },
+    {
+      "id": "257501",
+      "name": "KeyForge: Call of the Archons",
+      "yearPublished": 2018,
+      "thumbnail": "https://cf.geekdo-images.com/ZzJ2NGZz4CXxr1VIRkQZtA__micro@2x/img/W6ArjBXW_XifZUQ9csYcW6smbZg=/fit-in/128x128/filters:strip_icc()/pic4298867.jpg",
+      "image": "https://cf.geekdo-images.com/ZzJ2NGZz4CXxr1VIRkQZtA__large/img/BOwwofbwoZwEogrljSGQvDyOnko=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic4298867.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 2,
+      "playingTime": 45,
+      "minPlayTime": 15,
+      "maxPlayTime": 45,
+      "averageWeight": 2.4872,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Hand Management",
+        "Race",
+        "Take That",
+        "Unique Game"
+      ]
+    },
+    {
+      "id": "301607",
+      "name": "KeyForge: Mass Mutation",
+      "yearPublished": 2020,
+      "thumbnail": "https://cf.geekdo-images.com/5t-Z8plYuCidoIcHEvMJhA__micro@2x/img/B519theTORZGcsdwt54GcJMk7x4=/fit-in/128x128/filters:strip_icc()/pic5873441.png",
+      "image": "https://cf.geekdo-images.com/5t-Z8plYuCidoIcHEvMJhA__large/img/AKXcsC-BFM_u8XQSoolEcYw5ivk=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic5873441.png",
+      "minPlayers": 2,
+      "maxPlayers": 2,
+      "playingTime": 45,
+      "minPlayTime": 15,
+      "maxPlayTime": 45,
+      "averageWeight": 2.8261,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Hand Management",
+        "Race",
+        "Take That",
+        "Unique Game"
+      ]
+    },
+    {
+      "id": "181304",
+      "name": "Mysterium",
+      "yearPublished": 2015,
+      "thumbnail": "https://cf.geekdo-images.com/wfeAiLK5n5hD1omhnlYLLA__micro@2x/img/JbZJA1X84bG9A4TjXc9Gzy3VhT8=/fit-in/128x128/filters:strip_icc()/pic2601683.jpg",
+      "image": "https://cf.geekdo-images.com/wfeAiLK5n5hD1omhnlYLLA__large/img/x-NNwl5m-ZKVIyZpHokA4xuL6ik=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2601683.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 7,
+      "playingTime": 42,
+      "minPlayTime": 42,
+      "maxPlayTime": 42,
+      "averageWeight": 1.8896,
+      "numPlays": 0,
+      "categories": [
+        "Family",
+        "Coop"
+      ],
+      "mechanics": [
+        "Cooperative Game",
+        "Pattern Recognition",
+        "Storytelling",
+        "Synchronous Action Selection"
+      ]
+    },
+    {
+      "id": "147949",
+      "name": "One Night Ultimate Werewolf",
+      "yearPublished": 2014,
+      "thumbnail": "https://cf.geekdo-images.com/KLDb0vR3w8mfaHgIGF0gHw__micro@2x/img/NSpxSOou9F0owEE0MeuFHsvcKzk=/fit-in/128x128/filters:strip_icc()/pic1809823.jpg",
+      "image": "https://cf.geekdo-images.com/KLDb0vR3w8mfaHgIGF0gHw__large/img/_80YR7nJaikZURSabvv9iUe_sBo=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic1809823.jpg",
+      "minPlayers": 3,
+      "maxPlayers": 10,
+      "playingTime": 10,
+      "minPlayTime": 10,
+      "maxPlayTime": 10,
+      "averageWeight": 1.383,
+      "numPlays": 0,
+      "categories": [
+        "Party"
+      ],
+      "mechanics": [
+        "Hidden Roles",
+        "Player Elimination",
+        "Role Playing",
+        "Simultaneous Action Selection",
+        "Voting"
+      ]
+    },
+    {
+      "id": "163166",
+      "name": "One Night Ultimate Werewolf: Daybreak",
+      "yearPublished": 2015,
+      "thumbnail": "https://cf.geekdo-images.com/-jMVcPlkpLcs-2nA_htb8g__micro@2x/img/Djk_E2pJNtb584P8X5JDzi4AHd4=/fit-in/128x128/filters:strip_icc()/pic2225958.jpg",
+      "image": "https://cf.geekdo-images.com/-jMVcPlkpLcs-2nA_htb8g__large/img/WTw1xBX8PpRh45M1WlKzz5XP2QE=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2225958.jpg",
+      "minPlayers": 3,
+      "maxPlayers": 10,
+      "playingTime": 10,
+      "minPlayTime": 10,
+      "maxPlayTime": 10,
+      "averageWeight": 1.4065,
+      "numPlays": 0,
+      "categories": [
+        "Party"
+      ],
+      "mechanics": [
+        "Hidden Roles",
+        "Role Playing",
+        "Simultaneous Action Selection",
+        "Voting"
+      ]
+    },
+    {
+      "id": "300531",
+      "name": "Paleo",
+      "yearPublished": 2020,
+      "thumbnail": "https://cf.geekdo-images.com/85t1wkwgvh3d2mmjsRcDrw__micro@2x/img/pgVsjpMEwwPvNpp4neELbwv5MBs=/fit-in/128x128/filters:strip_icc()/pic6039256.jpg",
+      "image": "https://cf.geekdo-images.com/85t1wkwgvh3d2mmjsRcDrw__large/img/OA9eCMwyDy0Uj2p8OZB6TMnRE2g=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic6039256.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 4,
+      "playingTime": 60,
+      "minPlayTime": 45,
+      "maxPlayTime": 60,
+      "averageWeight": 2.6552,
+      "numPlays": 0,
+      "categories": [
+        "Strategy",
+        "Coop"
+      ],
+      "mechanics": []
+    },
+    {
+      "id": "30549",
+      "name": "Pandemic",
+      "yearPublished": 2008,
+      "thumbnail": "https://cf.geekdo-images.com/S3ybV1LAp-8SnHIXLLjVqA__micro@2x/img/efLAsciFR_HN8lhYp-EBfEgjjDU=/fit-in/128x128/filters:strip_icc()/pic1534148.jpg",
+      "image": "https://cf.geekdo-images.com/S3ybV1LAp-8SnHIXLLjVqA__large/img/veSQoM47_pbCyoiaY6fr-QHHIUM=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic1534148.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 4,
+      "playingTime": 45,
+      "minPlayTime": 45,
+      "maxPlayTime": 45,
+      "averageWeight": 2.3941,
+      "numPlays": 0,
+      "categories": [
+        "Strategy",
+        "Coop"
+      ],
+      "mechanics": [
+        "Action Points",
+        "Cooperative Game",
+        "Hand Management",
+        "Point to Point Movement",
+        "Set Collection",
+        "Variable Player Powers"
+      ]
+    },
+    {
+      "id": "163412",
+      "name": "Patchwork",
+      "yearPublished": 2014,
+      "thumbnail": "https://cf.geekdo-images.com/wLW7pFn0--20lEizEz5p3A__micro@2x/img/ovhg53zRO6sDy6QNv1lY_0A8YsI=/fit-in/128x128/filters:strip_icc()/pic2270442.jpg",
+      "image": "https://cf.geekdo-images.com/wLW7pFn0--20lEizEz5p3A__large/img/WgyPrGWRHt0-C5O935uyJs0kMuQ=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2270442.jpg",
+      "minPlayers": 2,
+      "maxPlayers": 2,
+      "playingTime": 30,
+      "minPlayTime": 15,
+      "maxPlayTime": 30,
+      "averageWeight": 1.5981,
+      "numPlays": 0,
+      "categories": [
+        "Family"
+      ],
+      "mechanics": [
+        "Tile Placement",
+        "Time Track"
+      ]
+    },
+    {
+      "id": "162886",
+      "name": "Spirit Island",
+      "yearPublished": 2017,
+      "thumbnail": "https://cf.geekdo-images.com/a13ieMPP2s0KEaKNYmtH5w__micro@2x/img/G8fjiqedpku9dVCKGT0nZvR358U=/fit-in/128x128/filters:strip_icc()/pic3615739.png",
+      "image": "https://cf.geekdo-images.com/a13ieMPP2s0KEaKNYmtH5w__large/img/jshm03hI5BbGIomC1mJ9tIrnVyg=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic3615739.png",
+      "minPlayers": 1,
+      "maxPlayers": 4,
+      "playingTime": 120,
+      "minPlayTime": 90,
+      "maxPlayTime": 120,
+      "averageWeight": 4.0762,
+      "numPlays": 0,
+      "categories": [
+        "Strategy",
+        "Coop"
+      ],
+      "mechanics": [
+        "Action Retrieval",
+        "Cooperative Game",
+        "Hand Management",
+        "Modular Board",
+        "Simultaneous Action Selection",
+        "Variable Player Powers",
+        "Variable Set-up"
+      ]
+    },
+    {
+      "id": "430495",
+      "name": "Taco Tajm",
+      "yearPublished": 2024,
+      "thumbnail": "https://cf.geekdo-images.com/1FUQcmBxOgBtGaOu-nPd8Q__micro@2x/img/IN2Mc_Hnooltk3jVGPU1-x1h0AA=/fit-in/128x128/filters:strip_icc()/pic8812593.png",
+      "image": "https://cf.geekdo-images.com/1FUQcmBxOgBtGaOu-nPd8Q__large/img/nI5fqdeqyFO-I9peeH640Hg7MlE=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic8812593.png",
+      "minPlayers": 2,
+      "maxPlayers": 8,
+      "playingTime": 60,
+      "minPlayTime": 45,
+      "maxPlayTime": 60,
+      "averageWeight": 2.3333,
+      "numPlays": 0,
+      "categories": [
+        "Party",
+        "Family"
+      ],
+      "mechanics": [
+        "Memory",
+        "Pattern Recognition",
+        "Real-Time",
+        "Team-Based Game"
+      ]
+    },
+    {
+      "id": "128882",
+      "name": "The Resistance: Avalon",
+      "yearPublished": 2012,
+      "thumbnail": "https://cf.geekdo-images.com/LPa6rsGcv8S0-OeNjCOAEQ__micro@2x/img/kTjQY3OvCWhZaqbILbjPoEU0qnw=/fit-in/128x128/filters:strip_icc()/pic1398895.jpg",
+      "image": "https://cf.geekdo-images.com/LPa6rsGcv8S0-OeNjCOAEQ__large/img/s4Tnz6YIL5l7bD5fEU1_M_ASa9w=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic1398895.jpg",
+      "minPlayers": 5,
+      "maxPlayers": 10,
+      "playingTime": 30,
+      "minPlayTime": 30,
+      "maxPlayTime": 30,
+      "averageWeight": 1.7399,
+      "numPlays": 0,
+      "categories": [
+        "Strategy",
+        "Deduction"
+      ],
+      "mechanics": [
+        "Hidden Roles",
+        "Simultaneous Action Selection",
+        "Team-Based Game",
+        "Voting"
+      ]
+    },
+    {
+      "id": "274533",
+      "name": "Throw Throw Burrito",
+      "yearPublished": 2019,
+      "thumbnail": "https://cf.geekdo-images.com/_-eHW9MfHjAClQpKkX1kMw__micro@2x/img/HS2LUflei3odyNmsRHjN81ruZS0=/fit-in/128x128/filters:strip_icc()/pic6097313.png",
+      "image": "https://cf.geekdo-images.com/_-eHW9MfHjAClQpKkX1kMw__large/img/N8NcEVbxlWrgYP05tHAPZAlL4aA=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic6097313.png",
+      "minPlayers": 2,
+      "maxPlayers": 6,
+      "playingTime": 15,
+      "minPlayTime": 15,
+      "maxPlayTime": 15,
+      "averageWeight": 1.0976,
+      "numPlays": 0,
+      "categories": [
+        "Family",
+        "Party"
+      ],
+      "mechanics": [
+        "Card Play Conflict Resolution",
+        "Real-Time",
+        "Take That"
+      ]
+    },
+    {
+      "id": "266192",
+      "name": "Wingspan",
+      "yearPublished": 2019,
+      "thumbnail": "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__micro@2x/img/TRww35NHtreDy_GqtuDYTARyqKU=/fit-in/128x128/filters:strip_icc()/pic4458123.jpg",
+      "image": "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__large/img/LYVqCScD4_HADiSYfHW6mVCRXFw=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic4458123.jpg",
+      "minPlayers": 1,
+      "maxPlayers": 5,
+      "playingTime": 70,
+      "minPlayTime": 40,
+      "maxPlayTime": 70,
+      "averageWeight": 2.48,
+      "numPlays": 0,
+      "categories": [
+        "Family"
+      ],
+      "mechanics": [
+        "Action Queue",
+        "Dice Rolling",
+        "End Game Bonuses",
+        "Hand Management",
+        "Open Drafting",
+        "Set Collection",
+        "Solo / Solitaire Game"
+      ]
+    }
+  ]
 }

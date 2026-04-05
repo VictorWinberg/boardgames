@@ -4,11 +4,13 @@
  * Requires BGG_USERNAME and BGG_ACCESS_TOKEN (BoardGameGeek → Applications).
  */
 
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { XMLParser } from "fast-xml-parser";
+
+import { simplifyBggCategories } from "./simplify-bgg-categories.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(__dirname, "..", "public", "games.json");
@@ -204,8 +206,12 @@ function mergeThingIntoGame(base, thingItem) {
     averageWeight = num(stats.averageweight);
   }
 
-  const categories = linksByType(thingItem.link, "boardgamecategory");
+  const rawCategories = linksByType(thingItem.link, "boardgamecategory");
   const mechanics = linksByType(thingItem.link, "boardgamemechanic");
+  const categories = simplifyBggCategories(rawCategories, {
+    averageWeight,
+    mechanics,
+  });
 
   return {
     id,
@@ -276,23 +282,41 @@ async function main() {
     if (b < batches.length - 1) await sleep(BETWEEN_BATCH_MS);
   }
 
+  /** @type {Map<string, unknown[]>} */
+  let existingGeekdoById = new Map();
+  try {
+    const prevRaw = await readFile(OUT, "utf8");
+    const prev = JSON.parse(prevRaw);
+    for (const pg of prev.games || []) {
+      if (pg?.id != null && Array.isArray(pg.geekdoImages) && pg.geekdoImages.length)
+        existingGeekdoById.set(String(pg.id), pg.geekdoImages);
+    }
+  } catch {
+    /* no previous file */
+  }
+
   const games = [...byId.values()]
-    .map((g) => ({
-      id: String(g.id),
-      name: g.name,
-      yearPublished: g.yearPublished ?? null,
-      thumbnail: g.thumbnail ?? null,
-      image: g.image ?? null,
-      minPlayers: g.minPlayers ?? null,
-      maxPlayers: g.maxPlayers ?? null,
-      playingTime: g.playingTime ?? null,
-      minPlayTime: g.minPlayTime ?? null,
-      maxPlayTime: g.maxPlayTime ?? null,
-      averageWeight: g.averageWeight ?? null,
-      numPlays: g.numPlays ?? null,
-      categories: Array.isArray(g.categories) ? g.categories : [],
-      mechanics: Array.isArray(g.mechanics) ? g.mechanics : [],
-    }))
+    .map((g) => {
+      const id = String(g.id);
+      const geekdoImages = existingGeekdoById.get(id);
+      return {
+        id,
+        name: g.name,
+        yearPublished: g.yearPublished ?? null,
+        thumbnail: g.thumbnail ?? null,
+        image: g.image ?? null,
+        minPlayers: g.minPlayers ?? null,
+        maxPlayers: g.maxPlayers ?? null,
+        playingTime: g.playingTime ?? null,
+        minPlayTime: g.minPlayTime ?? null,
+        maxPlayTime: g.maxPlayTime ?? null,
+        averageWeight: g.averageWeight ?? null,
+        numPlays: g.numPlays ?? null,
+        categories: Array.isArray(g.categories) ? g.categories : [],
+        mechanics: Array.isArray(g.mechanics) ? g.mechanics : [],
+        ...(geekdoImages ? { geekdoImages } : {}),
+      };
+    })
     .sort((a, b) =>
       a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
     );

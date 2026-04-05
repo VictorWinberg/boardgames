@@ -28,6 +28,26 @@ npm run sync:bgg
 
 This writes [`public/games.json`](public/games.json). Commit the updated file if you want the collection versioned without CI secrets.
 
+### Cover images
+
+1. **Official art (recommended):** `npm run sync:bgg` sets each game’s `thumbnail` and `image` from the XML **`/thing`** response (BGG’s primary image). Re-running sync **keeps** existing `geekdoImages` arrays when the same game ids are present.
+
+2. **Geekdo gallery (all user photos, no guessing):** [`scripts/fill-images-geekdo.mjs`](scripts/fill-images-geekdo.mjs) downloads gallery images for **one** game (BGG thing `id`) into that game’s `geekdoImages` in [`public/games.json`](public/games.json). It does **not** pick a cover.
+
+   ```bash
+   npm run images:geekdo -- 174430
+   npm run images:geekdo -- 174430 --pageid 2   # second page of gallery (still one request)
+   npm run images:geekdo -- 174430 --verbose
+   npm run images:geekdo -- 174430 --dry-run --verbose
+   npm run images:geekdo -- 174430 --clear-images   # also set thumbnail/image to null for that game
+   ```
+
+   With **`npm run dev`**, picking a Geekdo image **writes `public/games.json` on disk**: it sets that game’s `thumbnail` and `image` and **removes** `geekdoImages` for that game (so the file is ready to commit). This uses a small Vite dev-only API; **GitHub Pages builds cannot write the repo**, so choose covers locally in dev, then commit `public/games.json`. **Download games.json** in the header still exports the loaded data; optional **Strip geekdoImages in export** drops gallery arrays from the download only.
+
+   Env: `GEEKDO_IMAGES_DELAY_MS` — delay between games (default 350).
+
+   The script makes **one request per game** with `sort=hot` and `showcount=100` (no pagination). Games with large galleries are truncated; hot order keeps the first page the most useful.
+
 ## Production build
 
 Match the **GitHub repository name** in `VITE_BASE_URL` (trailing slash). Example for repo `boardgames`:
