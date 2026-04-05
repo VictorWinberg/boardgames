@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync BoardGameGeek collection
+        env:
+          BGG_USERNAME: ${{ secrets.BGG_USERNAME }}
+          BGG_ACCESS_TOKEN: ${{ secrets.BGG_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$BGG_USERNAME" ] || [ -z "$BGG_ACCESS_TOKEN" ]; then
+            echo "BGG_USERNAME or BGG_ACCESS_TOKEN not set; using existing public/games.json"
+          else
+            npm run sync:bgg
+          fi
+
+      - name: Build project
+        run: npm run build
+        env:
+          VITE_BASE_URL: /boardgames/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
