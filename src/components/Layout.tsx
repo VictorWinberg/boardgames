@@ -18,7 +18,7 @@ export function Layout() {
               The collection
             </p>
             <p className="text-base text-muted-foreground">
-              Tavern hearth · BoardGameGeek shelf
+              Victor’s Game Night Arsenal
             </p>
           </div>
           <nav className="flex gap-1 rounded-lg border border-border/50 bg-background/25 p-1">

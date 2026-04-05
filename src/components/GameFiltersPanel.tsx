@@ -1,11 +1,21 @@
 import {
   MAX_TIME_BY_INDEX,
-  PLAYER_OPTIONS,
+  PLAYER_SLIDER_MAX,
+  WEIGHT_FILTER_SLIDER_MAX,
   collectCategories,
   filterPillClass,
+  formatPlayerFilterLabel,
+  playerCountToSliderStep,
+  sliderStepToPlayerCount,
+  weightFilterSliderStep,
+  weightFilterStepToTenths,
   weightFromSlider,
 } from "@/lib/gameFilters";
 import type { BggGame } from "@/types/bgg";
+
+/** Label | current value | control — same columns for every row */
+const FILTER_ROW_GRID =
+  "grid grid-cols-[7.5rem_minmax(0,10rem)_minmax(0,1fr)] gap-x-2 gap-y-1.5 items-start";
 
 export type GameFiltersPanelProps = {
   games: BggGame[];
@@ -51,52 +61,75 @@ export function GameFiltersPanel({
     maxTimeIndex === 0
       ? "No limit"
       : `Up to ${MAX_TIME_BY_INDEX[maxTimeIndex]} min`;
+  const playersLabel = formatPlayerFilterLabel(players);
+  const playersSliderStep = playerCountToSliderStep(players);
+  const minWeightValueLabel = minWeightActive
+    ? `${weightFromSlider(minWeightTenths).toFixed(1)} / 5`
+    : "Any";
+  const maxWeightValueLabel = maxWeightActive
+    ? `${weightFromSlider(maxWeightTenths).toFixed(1)} / 5`
+    : "Any";
+  const categoryValueLabel = category ?? "Any";
+  const minWeightSliderStep = weightFilterSliderStep(
+    minWeightActive,
+    minWeightTenths,
+  );
+  const maxWeightSliderStep = weightFilterSliderStep(
+    maxWeightActive,
+    maxWeightTenths,
+  );
 
   return (
     <fieldset className="board-card space-y-3 rounded-lg border border-border bg-card p-3">
       <legend className="sr-only">Filters</legend>
 
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+      <div className={FILTER_ROW_GRID}>
         <span
-          className="shrink-0 text-base font-medium text-foreground"
+          className="text-base font-medium text-foreground"
           id="filter-players-label"
         >
           Players
         </span>
-        <div
-          className="flex min-w-0 flex-1 flex-wrap gap-1.5"
-          role="radiogroup"
-          aria-labelledby="filter-players-label"
-        >
-          {PLAYER_OPTIONS.map((n) => {
-            const selected = players === n;
-            const label = n == null ? "Any" : String(n);
-            return (
-              <button
-                key={label}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                onClick={() => setPlayers(n)}
-                className={filterPillClass(selected)}
-              >
-                {label}
-              </button>
-            );
-          })}
+        <span className="min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground">
+          {playersLabel}
+        </span>
+        <div className="min-w-0">
+          <input
+            type="range"
+            min={0}
+            max={PLAYER_SLIDER_MAX}
+            step={1}
+            value={playersSliderStep}
+            onChange={(e) =>
+              setPlayers(sliderStepToPlayerCount(Number(e.target.value)))
+            }
+            className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+            aria-labelledby="filter-players-label"
+            aria-valuetext={playersLabel}
+          />
+          <div className="mt-0.5 flex justify-between text-sm text-muted-foreground">
+            <span>Any</span>
+            <span>10</span>
+          </div>
         </div>
       </div>
 
       {categoryOptions.length > 0 ? (
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+        <div className={FILTER_ROW_GRID}>
           <span
-            className="shrink-0 text-base font-medium text-foreground"
+            className="text-base font-medium text-foreground"
             id="filter-category-label"
           >
             Category
           </span>
+          <span
+            className="min-w-0 truncate text-left text-base leading-tight text-muted-foreground"
+            title={category ?? undefined}
+          >
+            {categoryValueLabel}
+          </span>
           <div
-            className="flex min-w-0 flex-1 flex-wrap gap-1.5"
+            className="flex min-w-0 flex-wrap gap-1.5"
             role="radiogroup"
             aria-labelledby="filter-category-label"
           >
@@ -128,111 +161,105 @@ export function GameFiltersPanel({
         </div>
       ) : null}
 
-      <div className="space-y-2 border-t border-border pt-2">
-        <div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-base font-medium text-foreground">
-              Min weight
-            </span>
-            <button
-              type="button"
-              onClick={() => setMinWeightActive(false)}
-              className={filterPillClass(!minWeightActive)}
-            >
-              Any
-            </button>
-            <button
-              type="button"
-              onClick={() => setMinWeightActive(true)}
-              className={filterPillClass(minWeightActive)}
-            >
-              At least…
-            </button>
-            {minWeightActive ? (
-              <span className="text-base tabular-nums text-muted-foreground">
-                {weightFromSlider(minWeightTenths).toFixed(1)} / 5
-              </span>
-            ) : null}
-          </div>
-          {minWeightActive ? (
+      <div className="space-y-2 border-t border-border pt-3">
+        <div className={FILTER_ROW_GRID}>
+          <span
+            className="text-base font-medium text-foreground"
+            id="filter-min-weight-label"
+          >
+            Min weight
+          </span>
+          <span className="min-w-0 text-left text-base tabular-nums text-muted-foreground">
+            {minWeightValueLabel}
+          </span>
+          <div className="min-w-0">
             <input
               type="range"
-              min={10}
-              max={50}
+              min={0}
+              max={WEIGHT_FILTER_SLIDER_MAX}
               step={1}
-              value={minWeightTenths}
-              onChange={(e) => setMinWeightTenths(Number(e.target.value))}
-              className="mt-1.5 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
-              aria-label="Minimum BGG weight"
+              value={minWeightSliderStep}
+              onChange={(e) => {
+                const step = Number(e.target.value);
+                if (step === 0) setMinWeightActive(false);
+                else {
+                  setMinWeightActive(true);
+                  setMinWeightTenths(weightFilterStepToTenths(step));
+                }
+              }}
+              className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+              aria-labelledby="filter-min-weight-label"
+              aria-valuetext={minWeightValueLabel}
             />
-          ) : null}
+            <div className="mt-0.5 flex justify-between text-sm text-muted-foreground">
+              <span>Any</span>
+              <span>5.0</span>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-base font-medium text-foreground">
-              Max weight
-            </span>
-            <button
-              type="button"
-              onClick={() => setMaxWeightActive(false)}
-              className={filterPillClass(!maxWeightActive)}
-            >
-              Any
-            </button>
-            <button
-              type="button"
-              onClick={() => setMaxWeightActive(true)}
-              className={filterPillClass(maxWeightActive)}
-            >
-              At most…
-            </button>
-            {maxWeightActive ? (
-              <span className="text-base tabular-nums text-muted-foreground">
-                {weightFromSlider(maxWeightTenths).toFixed(1)} / 5
-              </span>
-            ) : null}
-          </div>
-          {maxWeightActive ? (
+        <div className={FILTER_ROW_GRID}>
+          <span
+            className="text-base font-medium text-foreground"
+            id="filter-max-weight-label"
+          >
+            Max weight
+          </span>
+          <span className="min-w-0 text-left text-base tabular-nums text-muted-foreground">
+            {maxWeightValueLabel}
+          </span>
+          <div className="min-w-0">
             <input
               type="range"
-              min={10}
-              max={50}
+              min={0}
+              max={WEIGHT_FILTER_SLIDER_MAX}
               step={1}
-              value={maxWeightTenths}
-              onChange={(e) => setMaxWeightTenths(Number(e.target.value))}
-              className="mt-1.5 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
-              aria-label="Maximum BGG weight"
+              value={maxWeightSliderStep}
+              onChange={(e) => {
+                const step = Number(e.target.value);
+                if (step === 0) setMaxWeightActive(false);
+                else {
+                  setMaxWeightActive(true);
+                  setMaxWeightTenths(weightFilterStepToTenths(step));
+                }
+              }}
+              className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+              aria-labelledby="filter-max-weight-label"
+              aria-valuetext={maxWeightValueLabel}
             />
-          ) : null}
+            <div className="mt-0.5 flex justify-between text-sm text-muted-foreground">
+              <span>Any</span>
+              <span>5.0</span>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <div className="mb-1.5 flex items-center justify-between gap-2">
-            <span
-              className="text-base font-medium text-foreground"
-              id="filter-time-label"
-            >
-              Max time
-            </span>
-            <span className="shrink-0 text-base tabular-nums text-muted-foreground">
-              {maxTimeLabel}
-            </span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={MAX_TIME_BY_INDEX.length - 1}
-            step={1}
-            value={maxTimeIndex}
-            onChange={(e) => setMaxTimeIndex(Number(e.target.value))}
-            className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
-            aria-labelledby="filter-time-label"
-            aria-valuetext={maxTimeLabel}
-          />
-          <div className="mt-0.5 flex justify-between text-base text-muted-foreground">
-            <span>No limit</span>
-            <span>240 min</span>
+        <div className={FILTER_ROW_GRID}>
+          <span
+            className="text-base font-medium text-foreground"
+            id="filter-time-label"
+          >
+            Max time
+          </span>
+          <span className="min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground">
+            {maxTimeLabel}
+          </span>
+          <div className="min-w-0">
+            <input
+              type="range"
+              min={0}
+              max={MAX_TIME_BY_INDEX.length - 1}
+              step={1}
+              value={maxTimeIndex}
+              onChange={(e) => setMaxTimeIndex(Number(e.target.value))}
+              className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+              aria-labelledby="filter-time-label"
+              aria-valuetext={maxTimeLabel}
+            />
+            <div className="mt-0.5 flex justify-between text-sm text-muted-foreground">
+              <span>No limit</span>
+              <span>240 min</span>
+            </div>
           </div>
         </div>
       </div>

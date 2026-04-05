@@ -116,7 +116,7 @@ export function RandomPicker() {
   const showResultHero = Boolean(pickedId && filtersCollapsed);
   const containerClass = showResultHero
     ? "mx-auto max-w-3xl space-y-6"
-    : "mx-auto max-w-xl space-y-4";
+    : "mx-auto w-full max-w-3xl space-y-4";
 
   return (
     <>
@@ -192,7 +192,7 @@ export function RandomPicker() {
       </div>
 
       {!showResultHero ? (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-center gap-2">
           <button
             type="button"
             onClick={roll}
