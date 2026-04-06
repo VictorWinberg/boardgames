@@ -28,8 +28,7 @@ export function matchesFilters(g: BggGame, f: FilterState): boolean {
   }
 
   if (f.maxTime != null) {
-    const play =
-      g.playingTime ?? g.maxPlayTime ?? g.minPlayTime ?? null;
+    const play = g.playingTime ?? g.maxPlayTime ?? g.minPlayTime ?? null;
     if (play == null || play > f.maxTime) return false;
   }
 
@@ -54,7 +53,16 @@ export function matchesFilters(g: BggGame, f: FilterState): boolean {
 
 export const PLAYER_OPTIONS: (number | null)[] = [
   null,
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
 ];
 
 export const PLAYER_SLIDER_MAX = PLAYER_OPTIONS.length - 1;
@@ -69,13 +77,23 @@ export function sliderStepToPlayerCount(step: number): number | null {
 }
 
 export function formatPlayerFilterLabel(players: number | null): string {
-  return players == null ? "Any" : `${players} ${players === 1 ? "player" : "players"}`;
+  return players == null
+    ? "Any"
+    : `${players} ${players === 1 ? "player" : "players"}`;
 }
 
 /** Index 0 = no limit; otherwise minutes */
 export const MAX_TIME_BY_INDEX = [
   null,
-  30, 45, 60, 75, 90, 120, 150, 180, 240,
+  30,
+  45,
+  60,
+  75,
+  90,
+  120,
+  150,
+  180,
+  240,
 ] as const;
 
 export function weightFromSlider(v: number): number {
@@ -85,7 +103,10 @@ export function weightFromSlider(v: number): number {
 /** Step 0 = no filter; 1–41 → tenths 10–50 (weights 1.0–5.0). */
 export const WEIGHT_FILTER_SLIDER_MAX = 41;
 
-export function weightFilterSliderStep(active: boolean, tenths: number): number {
+export function weightFilterSliderStep(
+  active: boolean,
+  tenths: number,
+): number {
   if (!active) return 0;
   const s = tenths - 9;
   return Math.min(WEIGHT_FILTER_SLIDER_MAX, Math.max(1, s));

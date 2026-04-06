@@ -67,12 +67,12 @@ function IconX({ className }: { className?: string }) {
   );
 }
 
-/** Top-right of the value label (flex row ends with text; icon stays clear) */
+/** Top-right corner of the trigger (value text ends before it; icon stays clear on the left) */
 const clearOnLabelClass =
-  "absolute right-0 top-0 z-[2] m-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-border/80 bg-card text-muted-foreground shadow-sm transition-colors hover:border-muted-foreground/40 hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  "absolute right-0 top-0 z-[2] m-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-border/80 bg-card text-muted-foreground shadow-sm transition-colors hover:border-muted-foreground/40 hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 const triggerBase =
-  "flex h-9 max-w-[9rem] min-w-9 shrink-0 items-center gap-1 rounded-md px-1.5 text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  "flex h-8 shrink-0 items-center gap-0.5 rounded-md text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export type ShelfQuickFilterIconsProps = {
   games: BggGame[];
@@ -124,14 +124,16 @@ export function ShelfQuickFilterIcons({
   return (
     <div
       ref={rootRef}
-      className="flex shrink-0 items-center gap-0.5 border-l border-border pl-1"
+      className="flex shrink-0 items-center gap-px border-l border-border pl-0.5"
     >
       <div className="relative shrink-0">
         <button
           type="button"
           className={[
             triggerBase,
-            playersActive ? "pr-5 text-primary" : "",
+            playersActive
+              ? "max-w-[4.25rem] min-w-0 justify-start pl-1 pr-3.5 text-primary"
+              : "min-w-8 justify-center px-1",
             open === "players" ? "bg-muted/80 text-foreground" : "",
           ].join(" ")}
           aria-label={
@@ -146,9 +148,9 @@ export function ShelfQuickFilterIcons({
             setOpen((o) => (o === "players" ? null : "players"))
           }
         >
-          <IconUsers className="h-[1.125rem] w-[1.125rem] shrink-0" />
+          <IconUsers className="h-3.5 w-3.5 shrink-0" />
           {playersActive ? (
-            <span className="hidden min-w-0 flex-1 truncate text-left text-xs font-semibold tabular-nums text-current sm:block">
+            <span className="min-w-0 flex-1 truncate text-left text-[0.6875rem] font-semibold leading-none tabular-nums text-current">
               {players}
             </span>
           ) : null}
@@ -165,7 +167,7 @@ export function ShelfQuickFilterIcons({
               setOpen((o) => (o === "players" ? null : o));
             }}
           >
-            <IconX className="h-2.5 w-2.5 stroke-[2.5]" />
+            <IconX className="h-2 w-2 stroke-[2.5]" />
           </button>
         ) : null}
         {open === "players" ? (
@@ -207,7 +209,9 @@ export function ShelfQuickFilterIcons({
           type="button"
           className={[
             triggerBase,
-            categoryActive ? "pr-5 text-primary" : "",
+            categoryActive
+              ? "max-w-[6.75rem] min-w-0 justify-start pl-1 pr-3.5 text-primary"
+              : "min-w-8 justify-center px-1",
             open === "category" ? "bg-muted/80 text-foreground" : "",
           ].join(" ")}
           aria-label={
@@ -223,9 +227,9 @@ export function ShelfQuickFilterIcons({
             setOpen((o) => (o === "category" ? null : "category"))
           }
         >
-          <IconTag className="h-[1.125rem] w-[1.125rem] shrink-0" />
+          <IconTag className="h-3.5 w-3.5 shrink-0" />
           {categoryActive ? (
-            <span className="hidden min-w-0 flex-1 truncate text-left text-xs font-medium leading-tight text-current sm:block">
+            <span className="min-w-0 flex-1 truncate text-left text-[0.6875rem] font-medium leading-tight text-current">
               {category}
             </span>
           ) : null}
@@ -242,7 +246,7 @@ export function ShelfQuickFilterIcons({
               setOpen((o) => (o === "category" ? null : o));
             }}
           >
-            <IconX className="h-2.5 w-2.5 stroke-[2.5]" />
+            <IconX className="h-2 w-2 stroke-[2.5]" />
           </button>
         ) : null}
         {open === "category" ? (

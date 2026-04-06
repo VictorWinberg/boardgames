@@ -1,4 +1,8 @@
 import {
+  filtersEqualToDefaults,
+  useGameFilters,
+} from "@/context/game-filters-context";
+import {
   MAX_TIME_BY_INDEX,
   PLAYER_SLIDER_MAX,
   WEIGHT_FILTER_SLIDER_MAX,
@@ -14,9 +18,11 @@ import {
 import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import type { BggGame } from "@/types/bgg";
 
-/** Label | current value | control — value column hidden below sm */
+/** Mobile: label + value stacked | control. sm+: label | value | control */
 const FILTER_ROW_GRID =
-  "grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-2 gap-y-1.5 items-start sm:grid-cols-[7.5rem_minmax(0,10rem)_minmax(0,1fr)]";
+  "grid grid-cols-[minmax(0,8.5rem)_minmax(0,1fr)] gap-x-2 gap-y-1.5 items-start sm:grid-cols-[7.5rem_minmax(0,10rem)_minmax(0,1fr)]";
+
+const filterLabelValueStack = "flex min-w-0 flex-col gap-0.5 sm:contents";
 
 export type GameFiltersPanelProps = {
   games: BggGame[];
@@ -85,20 +91,34 @@ export function GameFiltersPanel({
     maxWeightTenths,
   );
 
+  const { clearFilters } = useGameFilters();
+  const filtersAreDefault = filtersEqualToDefaults({
+    players,
+    maxTimeIndex,
+    minWeightTenths,
+    maxWeightTenths,
+    minWeightActive,
+    maxWeightActive,
+    category,
+    includeFriendsGames,
+  });
+
   return (
     <fieldset className="board-card space-y-3 rounded-lg border border-border bg-card p-3">
       <legend className="sr-only">Filters</legend>
 
       <div className={FILTER_ROW_GRID}>
-        <span
-          className="text-base font-medium text-foreground"
-          id="filter-players-label"
-        >
-          Players
-        </span>
-        <span className="hidden min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground sm:block">
-          {playersLabel}
-        </span>
+        <div className={filterLabelValueStack}>
+          <span
+            className="text-base font-medium text-foreground"
+            id="filter-players-label"
+          >
+            Players
+          </span>
+          <span className="min-w-0 truncate text-left text-xs leading-tight tabular-nums text-muted-foreground sm:text-base">
+            {playersLabel}
+          </span>
+        </div>
         <div className="min-w-0">
           <input
             type="range"
@@ -122,18 +142,20 @@ export function GameFiltersPanel({
 
       {categoryOptions.length > 0 ? (
         <div className={FILTER_ROW_GRID}>
-          <span
-            className="text-base font-medium text-foreground"
-            id="filter-category-label"
-          >
-            Category
-          </span>
-          <span
-            className="hidden min-w-0 truncate text-left text-base leading-tight text-muted-foreground sm:block"
-            title={category ?? undefined}
-          >
-            {categoryValueLabel}
-          </span>
+          <div className={filterLabelValueStack}>
+            <span
+              className="text-base font-medium text-foreground"
+              id="filter-category-label"
+            >
+              Category
+            </span>
+            <span
+              className="min-w-0 truncate text-left text-xs leading-tight text-muted-foreground sm:text-base"
+              title={category ?? undefined}
+            >
+              {categoryValueLabel}
+            </span>
+          </div>
           <div
             className="flex min-w-0 flex-wrap gap-1.5"
             role="radiogroup"
@@ -168,15 +190,17 @@ export function GameFiltersPanel({
       ) : null}
 
       <div className={FILTER_ROW_GRID}>
-        <span
-          className="text-base font-medium text-foreground"
-          id="filter-friends-games-label"
-        >
-          Friends&apos; games
-        </span>
-        <span className="hidden min-w-0 text-left text-base leading-tight text-muted-foreground sm:block">
-          {friendsGamesValueLabel}
-        </span>
+        <div className={filterLabelValueStack}>
+          <span
+            className="text-base font-medium text-foreground"
+            id="filter-friends-games-label"
+          >
+            Friends&apos; games
+          </span>
+          <span className="min-w-0 truncate text-left text-xs leading-tight text-muted-foreground sm:text-base">
+            {friendsGamesValueLabel}
+          </span>
+        </div>
         <div
           className="flex min-w-0 flex-wrap gap-1.5"
           role="radiogroup"
@@ -205,22 +229,24 @@ export function GameFiltersPanel({
 
       <div className="space-y-2 border-t border-border pt-3">
         <div className={FILTER_ROW_GRID}>
-          <span
-            className="text-base font-medium text-foreground"
-            id="filter-min-weight-label"
-          >
-            Min weight
-          </span>
-          <span
-            className={[
-              "hidden min-w-0 text-left text-base sm:block",
-              minWeightActive
-                ? bggWeightTextClass(weightFromSlider(minWeightTenths))
-                : "tabular-nums text-muted-foreground",
-            ].join(" ")}
-          >
-            {minWeightValueLabel}
-          </span>
+          <div className={filterLabelValueStack}>
+            <span
+              className="text-base font-medium text-foreground"
+              id="filter-min-weight-label"
+            >
+              Min weight
+            </span>
+            <span
+              className={[
+                "min-w-0 truncate text-left text-xs sm:text-base",
+                minWeightActive
+                  ? bggWeightTextClass(weightFromSlider(minWeightTenths))
+                  : "tabular-nums text-muted-foreground",
+              ].join(" ")}
+            >
+              {minWeightValueLabel}
+            </span>
+          </div>
           <div className="min-w-0">
             <input
               type="range"
@@ -248,22 +274,24 @@ export function GameFiltersPanel({
         </div>
 
         <div className={FILTER_ROW_GRID}>
-          <span
-            className="text-base font-medium text-foreground"
-            id="filter-max-weight-label"
-          >
-            Max weight
-          </span>
-          <span
-            className={[
-              "hidden min-w-0 text-left text-base sm:block",
-              maxWeightActive
-                ? bggWeightTextClass(weightFromSlider(maxWeightTenths))
-                : "tabular-nums text-muted-foreground",
-            ].join(" ")}
-          >
-            {maxWeightValueLabel}
-          </span>
+          <div className={filterLabelValueStack}>
+            <span
+              className="text-base font-medium text-foreground"
+              id="filter-max-weight-label"
+            >
+              Max weight
+            </span>
+            <span
+              className={[
+                "min-w-0 truncate text-left text-xs sm:text-base",
+                maxWeightActive
+                  ? bggWeightTextClass(weightFromSlider(maxWeightTenths))
+                  : "tabular-nums text-muted-foreground",
+              ].join(" ")}
+            >
+              {maxWeightValueLabel}
+            </span>
+          </div>
           <div className="min-w-0">
             <input
               type="range"
@@ -291,15 +319,20 @@ export function GameFiltersPanel({
         </div>
 
         <div className={FILTER_ROW_GRID}>
-          <span
-            className="text-base font-medium text-foreground"
-            id="filter-time-label"
-          >
-            Max time
-          </span>
-          <span className="hidden min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground sm:block">
-            {maxTimeLabel}
-          </span>
+          <div className={filterLabelValueStack}>
+            <span
+              className="text-base font-medium text-foreground"
+              id="filter-time-label"
+            >
+              Max time
+            </span>
+            <span
+              className="min-w-0 truncate text-left text-xs leading-tight tabular-nums text-muted-foreground sm:text-base"
+              title={maxTimeLabel}
+            >
+              {maxTimeLabel}
+            </span>
+          </div>
           <div className="min-w-0">
             <input
               type="range"
@@ -320,9 +353,19 @@ export function GameFiltersPanel({
         </div>
       </div>
 
-      <p className="text-base leading-snug text-muted-foreground">
-        {matchCount} / {totalCount} games match
-      </p>
+      <div className="flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <p className="text-base leading-snug text-muted-foreground">
+          {matchCount} / {totalCount} games match
+        </p>
+        <button
+          type="button"
+          onClick={clearFilters}
+          disabled={filtersAreDefault}
+          className="shrink-0 self-start rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/60 disabled:cursor-not-allowed disabled:opacity-45 sm:self-auto"
+        >
+          Clear filters
+        </button>
+      </div>
     </fieldset>
   );
 }

@@ -5,6 +5,7 @@ import { GeekdoCoverModal } from "@/components/GeekdoCoverModal";
 import { useGameFilters } from "@/context/game-filters-context";
 import { useGamesData } from "@/context/games-data-context";
 import { bggBoardGameUrl } from "@/lib/bggGameUrl";
+import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import {
   MAX_TIME_BY_INDEX,
   isFriendsOwnedGame,
@@ -12,12 +13,67 @@ import {
   weightFromSlider,
   type FilterState,
 } from "@/lib/gameFilters";
+import { formatPlayerCount } from "@/lib/formatPlayerCount";
 import { formatPlayTimeRange } from "@/lib/formatPlayTimeRange";
+import type { BggGame } from "@/types/bgg";
 
 function pickRandom<T>(items: T[]): T | null {
   if (items.length === 0) return null;
   const i = Math.floor(Math.random() * items.length);
   return items[i] ?? null;
+}
+
+function formatWeight(w: number | null): string {
+  if (w == null) return "—";
+  const rounded = Math.round(w * 100) / 100;
+  return `${rounded} / 5`;
+}
+
+function playersLine(game: BggGame): string {
+  const raw = formatPlayerCount(game);
+  if (raw === "—") return "—";
+  return `${raw} players`;
+}
+
+function StatBox({
+  label,
+  value,
+  valueClassName,
+}: {
+  label: string;
+  value: string;
+  valueClassName?: string;
+}) {
+  return (
+    <div className="min-w-0">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </h3>
+      <p
+        className={["mt-0.5 text-base", valueClassName ?? "text-foreground"].join(
+          " ",
+        )}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function TagList({ items }: { items: string[] }) {
+  if (items.length === 0) return null;
+  return (
+    <ul className="flex flex-wrap gap-1.5">
+      {items.map((item) => (
+        <li
+          key={item}
+          className="rounded-md border border-border bg-muted/50 px-2 py-1 text-sm text-foreground"
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export function RandomPicker() {
@@ -125,7 +181,7 @@ export function RandomPicker() {
 
   const showResultHero = Boolean(pickedId && filtersCollapsed);
   const containerClass = showResultHero
-    ? "mx-auto max-w-3xl space-y-6"
+    ? "mx-auto max-w-5xl space-y-6"
     : "mx-auto w-full max-w-3xl space-y-4";
 
   return (
@@ -226,130 +282,216 @@ export function RandomPicker() {
         <article
           className={[
             "board-card overflow-hidden rounded-xl border border-border bg-card",
-            showResultHero ? "ring-1 ring-primary/25" : "",
+            showResultHero ? "relative ring-1 ring-primary/25" : "",
           ].join(" ")}
         >
-          <div
-            className={
-              showResultHero
-                ? "grid gap-6 md:grid-cols-[minmax(0,320px)_1fr] md:items-stretch"
-                : "grid gap-4 sm:grid-cols-[140px_1fr] sm:items-start"
-            }
-          >
-            <div
-              className={
-                showResultHero
-                  ? "aspect-square w-full overflow-hidden bg-muted"
-                  : "aspect-square w-full max-w-[200px] overflow-hidden bg-muted"
-              }
-            >
-              {picked.thumbnail || picked.image ? (
-                <img
-                  src={picked.image || picked.thumbnail || ""}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setCoverModalOpen(true)}
-                  className={[
-                    "flex h-full w-full cursor-pointer flex-col items-center justify-center gap-1 px-3 text-center text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    showResultHero ? "min-h-[200px] text-base" : "min-h-[140px] text-base",
-                  ].join(" ")}
-                >
-                  <span>No image</span>
-                  <span className="text-base font-medium text-primary">Tap to choose</span>
-                </button>
-              )}
-            </div>
-            <div
-              className={
-                showResultHero
-                  ? "min-w-0 p-5 md:py-8 md:pr-8"
-                  : "min-w-0 p-4 sm:py-4 sm:pr-4"
-              }
-            >
-              <h2
-                className={
-                  showResultHero
-                    ? "line-clamp-1 min-w-0 text-2xl font-bold tracking-tight text-card-foreground md:text-3xl"
-                    : "line-clamp-1 min-w-0 text-xl font-bold text-card-foreground"
-                }
-              >
-                <a
-                  href={bggBoardGameUrl(picked.id)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm"
-                >
+          {showResultHero ? (
+            <>
+              <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2 px-3 py-2 sm:relative sm:z-auto sm:border-b sm:border-border sm:bg-card sm:px-5 sm:py-3">
+                <h2 className="min-w-0 flex-1 text-base font-semibold leading-tight text-white [text-shadow:0_0_1px_rgba(0,0,0,0.95),0_1px_2px_rgba(0,0,0,0.92),0_2px_8px_rgba(0,0,0,0.65),0_0_20px_rgba(0,0,0,0.45)] sm:text-xl sm:leading-normal sm:text-foreground sm:[text-shadow:none]">
                   {picked.name}
                   {picked.yearPublished != null ? (
-                    <span className="font-normal text-muted-foreground">
+                    <span className="font-normal text-white/85 sm:text-muted-foreground">
                       {" "}
                       ({picked.yearPublished})
                     </span>
                   ) : null}
-                </a>
-              </h2>
-              <dl
-                className={
-                  showResultHero
-                    ? "mt-5 grid grid-cols-1 gap-3 text-base text-muted-foreground sm:grid-cols-2"
-                    : "mt-3 grid grid-cols-1 gap-2 text-base text-muted-foreground sm:grid-cols-2"
-                }
-              >
-                <div>
-                  <dt className="font-medium text-foreground">Time</dt>
-                  <dd>{formatPlayTimeRange(picked)}</dd>
+                </h2>
+              </div>
+              <div className="flex flex-col sm:flex-row">
+                <div className="flex min-h-[40vh] shrink-0 items-center justify-center bg-muted/40 px-6 pt-8 pb-2 sm:min-h-0 sm:w-[min(100%,28rem)] sm:flex-1 sm:max-w-[50%] sm:px-8 sm:pt-10 sm:pb-4">
+                  {picked.thumbnail || picked.image ? (
+                    <img
+                      src={picked.image || picked.thumbnail || ""}
+                      alt=""
+                      className="max-h-[min(70vh,100%)] w-full max-w-full object-contain shadow-md"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 px-2 text-center">
+                      <p className="text-base text-muted-foreground">
+                        No cover image
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setCoverModalOpen(true)}
+                        className="rounded-lg border border-border bg-card px-4 py-2 text-base font-medium text-foreground shadow-sm transition-colors hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        Choose cover
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {picked.numPlays != null && picked.numPlays > 0 ? (
+                <div className="flex min-w-0 flex-col gap-4 border-t border-border p-4 sm:min-w-[20rem] sm:max-w-xl sm:flex-1 sm:border-l sm:border-t-0 sm:p-5">
+                  {picked.owner?.trim() ? (
+                    <p className="text-sm font-semibold text-primary">
+                      {picked.owner.trim()}&apos;s copy
+                    </p>
+                  ) : null}
+
+                  {picked.description?.trim() ? (
+                    <section aria-labelledby="oracle-picked-description">
+                      <h3
+                        id="oracle-picked-description"
+                        className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                      >
+                        Description
+                      </h3>
+                      <p className="text-base leading-relaxed text-muted-foreground">
+                        {picked.description.trim()}
+                      </p>
+                    </section>
+                  ) : null}
+
+                  <section
+                    aria-label="Game stats"
+                    className="grid grid-cols-2 gap-x-4 gap-y-3"
+                  >
+                    <StatBox label="Players" value={playersLine(picked)} />
+                    <StatBox
+                      label="Play time"
+                      value={formatPlayTimeRange(picked)}
+                    />
+                    <StatBox
+                      label="Complexity"
+                      value={formatWeight(picked.averageWeight)}
+                      valueClassName={
+                        picked.averageWeight != null
+                          ? bggWeightTextClass(picked.averageWeight)
+                          : undefined
+                      }
+                    />
+                    {picked.numPlays != null && picked.numPlays > 0 ? (
+                      <StatBox
+                        label="Your plays"
+                        value={String(picked.numPlays)}
+                      />
+                    ) : null}
+                  </section>
+
+                  {picked.geekdoImages != null &&
+                  picked.geekdoImages.length > 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      {picked.geekdoImages.length} alternate cover
+                      {picked.geekdoImages.length === 1 ? "" : "s"} in gallery
+                      data
+                    </p>
+                  ) : null}
+
+                  {picked.categories.length > 0 ? (
+                    <section aria-labelledby="oracle-picked-categories">
+                      <h3
+                        id="oracle-picked-categories"
+                        className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                      >
+                        Categories
+                      </h3>
+                      <TagList items={picked.categories} />
+                    </section>
+                  ) : null}
+
+                  {picked.mechanics.length > 0 ? (
+                    <section aria-labelledby="oracle-picked-mechanics">
+                      <h3
+                        id="oracle-picked-mechanics"
+                        className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                      >
+                        Mechanics
+                      </h3>
+                      <TagList items={picked.mechanics} />
+                    </section>
+                  ) : null}
+
+                  <p className="mt-auto pt-2">
+                    <a
+                      href={bggBoardGameUrl(picked.id)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-sm text-base font-medium text-primary underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                    >
+                      Open on BoardGameGeek
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-[140px_1fr] sm:items-start">
+              <div className="aspect-square w-full max-w-[200px] overflow-hidden bg-muted">
+                {picked.thumbnail || picked.image ? (
+                  <img
+                    src={picked.image || picked.thumbnail || ""}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setCoverModalOpen(true)}
+                    className="flex h-full min-h-[140px] w-full cursor-pointer flex-col items-center justify-center gap-1 px-3 text-center text-base text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <span>No image</span>
+                    <span className="text-base font-medium text-primary">
+                      Tap to choose
+                    </span>
+                  </button>
+                )}
+              </div>
+              <div className="min-w-0 p-4 sm:py-4 sm:pr-4">
+                <h2 className="line-clamp-1 min-w-0 text-xl font-bold text-card-foreground">
+                  <a
+                    href={bggBoardGameUrl(picked.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-sm hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                  >
+                    {picked.name}
+                    {picked.yearPublished != null ? (
+                      <span className="font-normal text-muted-foreground">
+                        {" "}
+                        ({picked.yearPublished})
+                      </span>
+                    ) : null}
+                  </a>
+                </h2>
+                <dl className="mt-3 grid grid-cols-1 gap-2 text-base text-muted-foreground sm:grid-cols-2">
                   <div>
-                    <dt className="font-medium text-foreground">Your plays</dt>
-                    <dd>{picked.numPlays}</dd>
+                    <dt className="font-medium text-foreground">Time</dt>
+                    <dd>{formatPlayTimeRange(picked)}</dd>
                   </div>
+                  {picked.numPlays != null && picked.numPlays > 0 ? (
+                    <div>
+                      <dt className="font-medium text-foreground">
+                        Your plays
+                      </dt>
+                      <dd>{picked.numPlays}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+                {picked.categories.length > 0 ? (
+                  <p className="mt-3 text-base text-muted-foreground">
+                    <span className="font-medium text-foreground">
+                      Categories:{" "}
+                    </span>
+                    {picked.categories.join(", ")}
+                  </p>
                 ) : null}
-              </dl>
-              {picked.categories.length > 0 ? (
-                <p
-                  className={
-                    showResultHero
-                      ? "mt-4 text-base text-muted-foreground"
-                      : "mt-3 text-base text-muted-foreground"
-                  }
+                {picked.owner?.trim() ? (
+                  <p className="mt-2 text-base text-muted-foreground">
+                    <span className="font-medium text-foreground">Owner</span>{" "}
+                    {picked.owner.trim()}
+                  </p>
+                ) : null}
+                <a
+                  href={bggBoardGameUrl(picked.id)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-block text-base font-medium text-primary underline-offset-2 hover:underline"
                 >
-                  <span className="font-medium text-foreground">
-                    Categories:{" "}
-                  </span>
-                  {picked.categories.join(", ")}
-                </p>
-              ) : null}
-              {picked.owner?.trim() ? (
-                <p
-                  className={
-                    showResultHero
-                      ? "mt-3 text-base text-muted-foreground"
-                      : "mt-2 text-base text-muted-foreground"
-                  }
-                >
-                  <span className="font-medium text-foreground">Owner</span>{" "}
-                  {picked.owner.trim()}
-                </p>
-              ) : null}
-              <a
-                href={`https://boardgamegeek.com/boardgame/${picked.id}`}
-                target="_blank"
-                rel="noreferrer"
-                className={
-                  showResultHero
-                    ? "mt-6 inline-block text-base font-medium text-primary underline-offset-2 hover:underline"
-                    : "mt-4 inline-block text-base font-medium text-primary underline-offset-2 hover:underline"
-                }
-              >
-                Open on BoardGameGeek
-              </a>
+                  Open on BoardGameGeek
+                </a>
+              </div>
             </div>
-          </div>
+          )}
         </article>
       ) : null}
       </div>

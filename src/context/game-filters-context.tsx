@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -39,6 +40,20 @@ const DEFAULT_FILTERS: PersistedGameFilters = {
   category: null,
   includeFriendsGames: false,
 };
+
+/** True when every field matches the default filter state (Clear filters would be a no-op). */
+export function filtersEqualToDefaults(f: PersistedGameFilters): boolean {
+  return (
+    f.players === DEFAULT_FILTERS.players &&
+    f.maxTimeIndex === DEFAULT_FILTERS.maxTimeIndex &&
+    f.minWeightTenths === DEFAULT_FILTERS.minWeightTenths &&
+    f.maxWeightTenths === DEFAULT_FILTERS.maxWeightTenths &&
+    f.minWeightActive === DEFAULT_FILTERS.minWeightActive &&
+    f.maxWeightActive === DEFAULT_FILTERS.maxWeightActive &&
+    f.category === DEFAULT_FILTERS.category &&
+    f.includeFriendsGames === DEFAULT_FILTERS.includeFriendsGames
+  );
+}
 
 function clampInt(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, Math.trunc(n)));
@@ -133,6 +148,8 @@ export type GameFiltersContextValue = {
   setCategory: Dispatch<SetStateAction<string | null>>;
   includeFriendsGames: boolean;
   setIncludeFriendsGames: Dispatch<SetStateAction<boolean>>;
+  /** Resets all filters to defaults (same as a fresh session). */
+  clearFilters: () => void;
 };
 
 const GameFiltersContext = createContext<GameFiltersContextValue | null>(
@@ -156,6 +173,17 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
   const [includeFriendsGames, setIncludeFriendsGames] = useState(
     s0.includeFriendsGames,
   );
+
+  const clearFilters = useCallback(() => {
+    setPlayers(DEFAULT_FILTERS.players);
+    setMaxTimeIndex(DEFAULT_FILTERS.maxTimeIndex);
+    setMinWeightTenths(DEFAULT_FILTERS.minWeightTenths);
+    setMaxWeightTenths(DEFAULT_FILTERS.maxWeightTenths);
+    setMinWeightActive(DEFAULT_FILTERS.minWeightActive);
+    setMaxWeightActive(DEFAULT_FILTERS.maxWeightActive);
+    setCategory(DEFAULT_FILTERS.category);
+    setIncludeFriendsGames(DEFAULT_FILTERS.includeFriendsGames);
+  }, []);
 
   useEffect(() => {
     const payload: PersistedGameFilters = {
@@ -202,6 +230,7 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
       setCategory,
       includeFriendsGames,
       setIncludeFriendsGames,
+      clearFilters,
     }),
     [
       players,
@@ -212,6 +241,7 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
       maxWeightActive,
       category,
       includeFriendsGames,
+      clearFilters,
     ],
   );
 

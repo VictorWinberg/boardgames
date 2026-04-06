@@ -412,7 +412,7 @@ function GameCompactCard({
         onClick={onOpenFullscreen}
         onKeyDown={(e) => activateOnKey(e, onOpenFullscreen)}
       >
-        <h2 className="line-clamp-2 min-w-0 text-sm font-semibold leading-snug text-card-foreground">
+        <h2 className="line-clamp-1 min-w-0 text-sm font-semibold leading-snug text-card-foreground">
           {game.name}
           {game.yearPublished != null ? (
             <span className="font-normal text-muted-foreground">
