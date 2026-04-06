@@ -20,10 +20,13 @@ export default defineConfig(() => {
       {
         name: "favicon-base-url",
         transformIndexHtml(html) {
-          return html.replace(
-            "__FAVICON_HREF__",
-            `${baseWithSlash}favicon.svg`,
-          );
+          return html
+            .replace("__FAVICON_HREF__", `${baseWithSlash}favicon.svg`)
+            .replace("__FAVICON_PNG_HREF__", `${baseWithSlash}favicon-32x32.png`)
+            .replace(
+              "__APPLE_TOUCH_ICON_HREF__",
+              `${baseWithSlash}apple-touch-icon.png`,
+            );
         },
       },
     ],
