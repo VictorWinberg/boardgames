@@ -23,7 +23,7 @@
         "Set Collection",
         "Simultaneous Action Selection"
       ],
-      "description": "7 Wonders Duel (2015) is a strategy game for 2 players. It features mechanics such as Card Drafting, Set Collection, Simultaneous Action Selection. Expect roughly 30 minutes per session, with a BGG weight near 2.2 out of 5."
+      "description": "Draft cards across three ages to grow cities, wonders, armies, and science in a celebrated duel between two rival civilizations."
     },
     {
       "id": "205637",
@@ -48,7 +48,7 @@
         "Hand Management",
         "Variable Player Powers"
       ],
-      "description": "Arkham Horror: The Card Game (2016) is a strategy game for 1 to 2 players. It features mechanics such as Campaign / Battle Card Driven, Cooperative Game, Deck, Bag, and Pool Building, Hand Management, Variable Player Powers. Expect roughly 60 to 120 minutes per session, with a BGG weight near 3.6 out of 5."
+      "description": "Lovecraftian living-card tales: build investigator decks, survive escalating encounters, and let the plot reshape your options."
     },
     {
       "id": "367396",
@@ -73,7 +73,7 @@
         "Team-Based Game",
         "Voting"
       ],
-      "description": "Avalon: Big Box (2022) is a strategy, deduction game for 5 to 10 players. It features mechanics such as Hidden Roles, Simultaneous Action Selection, Team-Based Game, Voting. Expect roughly 30 minutes per session, with a BGG weight near 2.2 out of 5."
+      "description": "Big-box Arthurian traitors: many roles and modules, voted quests, Merlin knows evil but hides from the assassin after three wins."
     },
     {
       "id": "230802",
@@ -97,7 +97,7 @@
         "Set Collection",
         "Tile Placement"
       ],
-      "description": "Azul (2017) is a family game for 2 to 4 players. It features mechanics such as Open Drafting, Pattern Building, Set Collection, Tile Placement. Expect roughly 30 to 45 minutes per session, with a BGG weight near 1.8 out of 5."
+      "description": "Moorish artisans draft factory tiles onto a palace wall—avoid waste, chase patterns—in a tactile hit praised for beauty and bite."
     },
     {
       "id": "281549",
@@ -125,7 +125,7 @@
         "Team-Based Game",
         "Variable Player Powers"
       ],
-      "description": "Beast (2023) is a strategy game for 2 to 4 players. It features mechanics such as Action Drafting, Closed Drafting, Hand Management, Hidden Movement, Point to Point Movement, Secret Unit Deployment, Team-Based Game, Variable Player Powers. Expect roughly 60 to 120 minutes per session, with a BGG weight near 3.1 out of 5."
+      "description": "One beast moves in secret while hunters draft actions and close in—strikes and the finale show whether predator or prey triumphs."
     },
     {
       "id": "170216",
@@ -150,7 +150,7 @@
         "Card Drafting",
         "Variable Player Powers"
       ],
-      "description": "Blood Rage (2015) is a strategy game for 2 to 5 players. It features mechanics such as Action Retrieval, Area Majority / Influence, Auction: Once Around, Card Drafting, Variable Player Powers. Expect roughly 60 to 90 minutes per session, with a BGG weight near 2.9 out of 5."
+      "description": "Vikings draft divine powers, brawl for map glory, and welcome heroic deaths before Ragnarök in this mythic area-control brawl."
     },
     {
       "id": "224517",
@@ -176,7 +176,7 @@
         "Network and Route Building",
         "Tile Placement"
       ],
-      "description": "Brass: Birmingham (2018) is a strategy game for 2 to 4 players. It features mechanics such as Chaining, Hand Management, Income, Loans, Network and Route Building, Tile Placement. Expect roughly 60 to 120 minutes per session, with a BGG weight near 3.9 out of 5."
+      "description": "English Midlands entrepreneurs weave canals and rails, juggle coal and iron, and time markets in this heavyweight industry euro."
     },
     {
       "id": "822",
@@ -198,7 +198,7 @@
         "Area Majority / Influence",
         "Tile Placement"
       ],
-      "description": "Carcassonne (2000) is a family game for 2 to 5 players. It features mechanics such as Area Majority / Influence, Tile Placement. Expect roughly 30 to 45 minutes per session, with a BGG weight near 1.9 out of 5."
+      "description": "Tile a growing medieval map, then claim cities, roads, and farms with meeples in the friendly classic about shared space and timing."
     },
     {
       "id": "13",
@@ -226,7 +226,7 @@
         "Trading"
       ],
       "owner": "Zach",
-      "description": "Catan (1995) is a family, strategy game for 3 to 4 players. It features mechanics such as Dice Rolling, Hand Management, Modular Board, Negotiation, Network and Route Building, Trading. Expect roughly 60 to 120 minutes per session, with a BGG weight near 2.4 out of 5."
+      "description": "Roll for goods, bargain, and link roads and cities on a modular island—race ten points in the gateway that defines board gaming."
     },
     {
       "id": "205398",
@@ -251,7 +251,7 @@
         "Take That",
         "Variable Player Powers"
       ],
-      "description": "Citadels (2016) is a strategy, party game for 2 to 8 players. It features mechanics such as Card Drafting, Player Elimination, Take That, Variable Player Powers. Expect roughly 30 to 60 minutes per session, with a BGG weight near 2.1 out of 5."
+      "description": "Secretly pick roles—thief, assassin, wizard, king—then resolve in order to build districts in a medieval city of bluff and timing."
     },
     {
       "id": "178900",
@@ -274,7 +274,7 @@
         "Memory",
         "Team-Based Game"
       ],
-      "description": "Codenames (2015) is a party game for 2 to 8 players. It features mechanics such as Communication Limits, Memory, Team-Based Game. Expect roughly 15 minutes per session, with a BGG weight near 1.3 out of 5."
+      "description": "Spymasters tie several words to one clue; teams guess allies, dodge the assassin, and groan when clever hints misfire hilariously."
     },
     {
       "id": "225694",
@@ -297,7 +297,7 @@
         "Pattern Recognition",
         "Team-Based Game"
       ],
-      "description": "Decrypto (2018) is a party game for 3 to 8 players. It features mechanics such as Communication Limits, Pattern Recognition, Team-Based Game. Expect roughly 15 to 45 minutes per session, with a BGG weight near 1.8 out of 5."
+      "description": "Teams hint secret codes to friends while rivals listen—clever enough to help, vague enough that enemies cannot steal your sequence."
     },
     {
       "id": "36218",
@@ -320,7 +320,7 @@
         "Hand Management",
         "Open Drafting"
       ],
-      "description": "Dominion (2008) is a strategy game for 2 to 4 players. It features mechanics such as Deck, Bag, and Pool Building, Hand Management, Open Drafting. Expect roughly 30 minutes per session, with a BGG weight near 2.3 out of 5."
+      "description": "Buy kingdom cards into your deck, chain actions into buys and points, and race to win the game that launched deck-building."
     },
     {
       "id": "199792",
@@ -347,7 +347,7 @@
         "Tableau Building",
         "Worker Placement"
       ],
-      "description": "Everdell (2018) is a family, strategy game for 1 to 4 players. It features mechanics such as Card Drafting, Hand Management, Open Drafting, Set Collection, Tableau Building, Worker Placement. Expect roughly 40 to 80 minutes per session, with a BGG weight near 2.8 out of 5."
+      "description": "Storybook critters gather goods under the Ever Tree, play charming cards, and ride seasons to build the coziest woodland engine."
     },
     {
       "id": "148949",
@@ -376,7 +376,7 @@
         "Variable Set-up",
         "Worker Placement"
       ],
-      "description": "Istanbul (2014) is a family, strategy game for 2 to 5 players. It features mechanics such as Dice Rolling, Modular Board, Pick-up and Deliver, Point to Point Movement, Rondel, Set Collection, Variable Set-up, Worker Placement. Expect roughly 40 to 60 minutes per session, with a BGG weight near 2.6 out of 5."
+      "description": "Race assistants through a modular bazaar, wheel goods on the rondel, and collect five rubies first in this brisk merchant puzzle."
     },
     {
       "id": "257501",
@@ -400,7 +400,7 @@
         "Take That",
         "Unique Game"
       ],
-      "description": "KeyForge: Call of the Archons (2018) is a strategy game for 2 players. It features mechanics such as Hand Management, Race, Take That, Unique Game. Expect roughly 15 to 45 minutes per session, with a BGG weight near 2.5 out of 5."
+      "description": "Sealed Archon decks are all different: three Houses race to forge three keys in Garfield’s chaotic unique-deck competitive duel."
     },
     {
       "id": "181304",
@@ -425,7 +425,7 @@
         "Storytelling",
         "Synchronous Action Selection"
       ],
-      "description": "Mysterium (2015) is a family, coop game for 2 to 7 players. It features mechanics such as Cooperative Game, Pattern Recognition, Storytelling, Synchronous Action Selection. Expect roughly 42 minutes per session, with a BGG weight near 1.9 out of 5."
+      "description": "A mute ghost deals dream art; psychics deduce killer, weapon, and room together before sand runs out in this cooperative mystery."
     },
     {
       "id": "147949",
@@ -450,7 +450,7 @@
         "Simultaneous Action Selection",
         "Voting"
       ],
-      "description": "One Night Ultimate Werewolf (2014) is a party game for 3 to 10 players. It features mechanics such as Hidden Roles, Player Elimination, Role Playing, Simultaneous Action Selection, Voting. Expect roughly 10 minutes per session, with a BGG weight near 1.4 out of 5."
+      "description": "Wake to hidden swaps, argue wildly, then vote out a werewolf in minutes—bluffing, memory, and instant rematches define the hit."
     },
     {
       "id": "300531",
@@ -476,7 +476,7 @@
         "Scenario / Mission / Campaign Game",
         "Simultaneous Action Selection"
       ],
-      "description": "Paleo (2020) is a strategy, coop game for 2 to 4 players. It features mechanics such as Cooperative Game, Deck, Bag, and Pool Building, Hand Management, Scenario / Mission / Campaign Game, Simultaneous Action Selection. Expect roughly 45 to 60 minutes per session, with a BGG weight near 2.7 out of 5."
+      "description": "Co-op cave people flip risky terrain, gather food and tools, unlock story art, and keep the whole tribe standing to the deck’s end."
     },
     {
       "id": "30549",
@@ -503,7 +503,7 @@
         "Set Collection",
         "Variable Player Powers"
       ],
-      "description": "Pandemic (2008) is a strategy, coop game for 2 to 4 players. It features mechanics such as Action Points, Cooperative Game, Hand Management, Point to Point Movement, Set Collection, Variable Player Powers. Expect roughly 45 minutes per session, with a BGG weight near 2.4 out of 5."
+      "description": "Race the deck: treat cubes, trade for cures, and halt outbreaks before four diseases spiral out of control across the world map."
     },
     {
       "id": "163412",
@@ -525,7 +525,7 @@
         "Tile Placement",
         "Time Track"
       ],
-      "description": "Patchwork (2014) is a family game for 2 players. It features mechanics such as Tile Placement, Time Track. Expect roughly 15 to 30 minutes per session, with a BGG weight near 1.6 out of 5."
+      "description": "Spend buttons and time on Tetris-like patches, fill your quilt grid, and beat the clock in this cozy two-player spatial duel."
     },
     {
       "id": "169786",
@@ -551,7 +551,7 @@
         "Variable Set-up"
       ],
       "owner": "Jan",
-      "description": "Scythe (2016) is a strategy game for 1 to 5 players. It features mechanics such as Action Retrieval, Area Majority / Influence, Grid Movement, Variable Player Powers, Variable Set-up. Expect roughly 90 to 140 minutes per session, with a BGG weight near 3.5 out of 5."
+      "description": "1920s factions spread workers and mechs, produce, fight, and chase asymmetric stars in a crunchy euro of hex control and engines."
     },
     {
       "id": "162886",
@@ -579,7 +579,7 @@
         "Variable Player Powers",
         "Variable Set-up"
       ],
-      "description": "Spirit Island (2017) is a strategy, coop game for 1 to 4 players. It features mechanics such as Action Retrieval, Cooperative Game, Hand Management, Modular Board, Simultaneous Action Selection, Variable Player Powers, Variable Set-up. Expect roughly 90 to 120 minutes per session, with a BGG weight near 4.1 out of 5."
+      "description": "Spirits grow power to wipe colonists and fear from the land—deep combos in a celebrated cooperative anti-colonial strategy game."
     },
     {
       "id": "430495",
@@ -604,7 +604,7 @@
         "Real-Time",
         "Team-Based Game"
       ],
-      "description": "Taco Tajm (2024) is a party, family game for 2 to 8 players. It features mechanics such as Memory, Pattern Recognition, Real-Time, Team-Based Game. Expect roughly 45 to 60 minutes per session, with a BGG weight near 2.3 out of 5."
+      "description": "Santa Maria promo: taco-themed team challenges of memory, speed, and silliness for big tables that want loud, food-flavored fun."
     },
     {
       "id": "167791",
@@ -629,7 +629,7 @@
         "Variable Player Powers"
       ],
       "owner": "Max",
-      "description": "Terraforming Mars (2016) is a strategy game for 1 to 5 players. It features mechanics such as Card Drafting, Hand Management, Tile Placement, Variable Player Powers. Expect roughly 120 minutes per session, with a BGG weight near 3.3 out of 5."
+      "description": "Corporation cards and hex tiles raise heat, oxygen, and oceans while you vie for milestones as Mars slowly greens and scores."
     },
     {
       "id": "128882",
@@ -654,7 +654,7 @@
         "Team-Based Game",
         "Voting"
       ],
-      "description": "The Resistance: Avalon (2012) is a strategy, deduction game for 5 to 10 players. It features mechanics such as Hidden Roles, Simultaneous Action Selection, Team-Based Game, Voting. Expect roughly 30 minutes per session, with a BGG weight near 1.7 out of 5."
+      "description": "Hidden evil sabotages Arthur’s quests; loyal knights need three wins, then Merlin must evade the assassin’s one lethal guess."
     },
     {
       "id": "274533",
@@ -678,7 +678,7 @@
         "Real-Time",
         "Take That"
       ],
-      "description": "Throw Throw Burrito (2019) is a family, party game for 2 to 6 players. It features mechanics such as Card Play Conflict Resolution, Real-Time, Take That. Expect roughly 15 minutes per session, with a BGG weight near 1.1 out of 5."
+      "description": "Slap down matches, then throw foam burritos—dodge, steal points, and laugh through card play fused with soft dodgeball chaos."
     },
     {
       "id": "266192",
@@ -705,7 +705,7 @@
         "Set Collection",
         "Solo / Solitaire Game"
       ],
-      "description": "Wingspan (2019) is a family game for 1 to 5 players. It features mechanics such as Action Queue, Dice Rolling, End Game Bonuses, Hand Management, Open Drafting, Set Collection, Solo / Solitaire Game. Expect roughly 40 to 70 minutes per session, with a BGG weight near 2.5 out of 5."
+      "description": "Slot birds into three habitats, chain eggs and food powers, and score a serene engine-builder celebrating ornithology and combos."
     }
   ]
 }

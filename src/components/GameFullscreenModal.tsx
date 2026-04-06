@@ -136,14 +136,14 @@ export function GameFullscreenModal({
         onClick={onClose}
       />
       <div className="board-card relative flex h-full w-full max-h-full max-w-5xl flex-col border-border bg-card sm:max-h-[min(100dvh,56rem)] sm:rounded-xl sm:border">
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
+        <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-2 px-3 py-2 sm:relative sm:z-auto sm:gap-3 sm:border-b sm:border-border sm:bg-card sm:px-5 sm:py-3">
           <h2
             id={titleId}
-            className="min-w-0 text-lg font-semibold text-foreground sm:text-xl"
+            className="min-w-0 text-base font-semibold leading-tight text-white [text-shadow:0_0_1px_rgba(0,0,0,0.95),0_1px_2px_rgba(0,0,0,0.92),0_2px_8px_rgba(0,0,0,0.65),0_0_20px_rgba(0,0,0,0.45)] sm:text-xl sm:leading-normal sm:text-foreground sm:[text-shadow:none]"
           >
             {game.name}
             {game.yearPublished != null ? (
-              <span className="font-normal text-muted-foreground">
+              <span className="font-normal text-white/85 sm:text-muted-foreground">
                 {" "}
                 ({game.yearPublished})
               </span>
@@ -152,13 +152,13 @@ export function GameFullscreenModal({
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-md border border-border bg-background px-3 py-1.5 text-base font-medium text-foreground hover:bg-muted"
+            className="shrink-0 rounded-md border-0 bg-transparent px-2 py-1 text-sm font-medium text-white [text-shadow:0_0_1px_rgba(0,0,0,0.95),0_1px_2px_rgba(0,0,0,0.9),0_2px_6px_rgba(0,0,0,0.6),0_0_16px_rgba(0,0,0,0.4)] hover:underline sm:border sm:border-border sm:bg-background sm:px-3 sm:py-1.5 sm:text-base sm:text-foreground sm:[text-shadow:none] sm:hover:no-underline sm:hover:bg-muted"
           >
             Close
           </button>
         </div>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain sm:flex-row">
-          <div className="flex min-h-[40vh] shrink-0 items-center justify-center bg-muted/40 p-4 sm:min-h-0 sm:w-[min(100%,28rem)] sm:flex-1 sm:max-w-[50%]">
+          <div className="flex min-h-[40vh] shrink-0 items-center justify-center bg-muted/40 px-6 pt-8 pb-2 sm:min-h-0 sm:w-[min(100%,28rem)] sm:flex-1 sm:max-w-[50%] sm:px-8 sm:pt-10 sm:pb-4">
             {src ? (
               <img
                 src={src}
