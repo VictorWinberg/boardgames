@@ -5,7 +5,6 @@ import { GeekdoCoverModal } from "@/components/GeekdoCoverModal";
 import { useGameFilters } from "@/context/game-filters-context";
 import { useGamesData } from "@/context/games-data-context";
 import { bggBoardGameUrl } from "@/lib/bggGameUrl";
-import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import {
   MAX_TIME_BY_INDEX,
   isFriendsOwnedGame,
@@ -13,7 +12,6 @@ import {
   weightFromSlider,
   type FilterState,
 } from "@/lib/gameFilters";
-import { formatPlayerCount } from "@/lib/formatPlayerCount";
 import { formatPlayTimeRange } from "@/lib/formatPlayTimeRange";
 
 function pickRandom<T>(items: T[]): T | null {
@@ -297,31 +295,14 @@ export function RandomPicker() {
               <dl
                 className={
                   showResultHero
-                    ? "mt-5 grid grid-cols-1 gap-3 text-base text-muted-foreground sm:grid-cols-4"
+                    ? "mt-5 grid grid-cols-1 gap-3 text-base text-muted-foreground sm:grid-cols-2"
                     : "mt-3 grid grid-cols-1 gap-2 text-base text-muted-foreground sm:grid-cols-2"
                 }
               >
                 <div>
-                  <dt className="font-medium text-foreground">Players</dt>
-                  <dd>
-                    {formatPlayerCount(picked, { unknownLabel: "?" })}
-                  </dd>
-                </div>
-                <div>
                   <dt className="font-medium text-foreground">Time</dt>
                   <dd>{formatPlayTimeRange(picked)}</dd>
                 </div>
-                {picked.averageWeight != null ? (
-                  <div>
-                    <dt className="font-medium text-foreground">Weight</dt>
-                    <dd>
-                      <span className={bggWeightTextClass(picked.averageWeight)}>
-                        {picked.averageWeight.toFixed(2)}
-                      </span>
-                      <span className="text-muted-foreground"> / 5</span>
-                    </dd>
-                  </div>
-                ) : null}
                 {picked.numPlays != null && picked.numPlays > 0 ? (
                   <div>
                     <dt className="font-medium text-foreground">Your plays</dt>

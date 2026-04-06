@@ -6,7 +6,6 @@ import { ShelfQuickFilterIcons } from "@/components/ShelfQuickFilterIcons";
 import { useGameFilters } from "@/context/game-filters-context";
 import { useGamesData } from "@/context/games-data-context";
 import { bggBoardGameUrl } from "@/lib/bggGameUrl";
-import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import {
   MAX_TIME_BY_INDEX,
   isFriendsOwnedGame,
@@ -14,18 +13,18 @@ import {
   weightFromSlider,
   type FilterState,
 } from "@/lib/gameFilters";
-import { formatPlayerCount } from "@/lib/formatPlayerCount";
 import { formatPlayTimeRange } from "@/lib/formatPlayTimeRange";
 import type { BggGame } from "@/types/bgg";
 
 const SHELF_VIEW_STORAGE_KEY = "boardgames-shelf-view";
 
-type ShelfViewMode = "card" | "list" | "grid";
+type ShelfViewMode = "card" | "compact" | "grid";
 
 function readShelfViewMode(): ShelfViewMode {
   if (typeof window === "undefined") return "card";
   const raw = localStorage.getItem(SHELF_VIEW_STORAGE_KEY);
-  if (raw === "list" || raw === "grid" || raw === "card") return raw;
+  if (raw === "list") return "compact";
+  if (raw === "compact" || raw === "grid" || raw === "card") return raw;
   return "card";
 }
 
@@ -48,7 +47,7 @@ function IconViewCard({ className }: { className?: string }) {
   );
 }
 
-function IconViewList({ className }: { className?: string }) {
+function IconViewCompactCard({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -60,12 +59,8 @@ function IconViewList({ className }: { className?: string }) {
       strokeLinejoin="round"
       aria-hidden
     >
-      <line x1="8" y1="6" x2="21" y2="6" />
-      <line x1="8" y1="12" x2="21" y2="12" />
-      <line x1="8" y1="18" x2="21" y2="18" />
-      <line x1="3" y1="6" x2="5" y2="6" />
-      <line x1="3" y1="12" x2="5" y2="12" />
-      <line x1="3" y1="18" x2="5" y2="18" />
+      <rect x="3" y="3" width="7" height="18" rx="1" />
+      <rect x="14" y="3" width="7" height="18" rx="1" />
     </svg>
   );
 }
@@ -100,7 +95,11 @@ function ShelfViewSelector({
   const modes: { mode: ShelfViewMode; label: string; Icon: typeof IconViewCard }[] =
     [
       { mode: "card", label: "Card view", Icon: IconViewCard },
-      { mode: "list", label: "List view", Icon: IconViewList },
+      {
+        mode: "compact",
+        label: "Compact cards",
+        Icon: IconViewCompactCard,
+      },
       { mode: "grid", label: "Grid view (covers only)", Icon: IconViewGrid },
     ];
 
@@ -132,6 +131,54 @@ function ShelfViewSelector({
         );
       })}
     </div>
+  );
+}
+
+function friendsGameOwnerName(game: BggGame): string | null {
+  const o = game.owner?.trim();
+  return o || null;
+}
+
+/** Shown when `game.owner` is set (friend’s copy). */
+function FriendsGameOwnerBadge({
+  ownerName,
+  variant,
+}: {
+  ownerName: string;
+  variant: "inline" | "cover" | "cover-top";
+}) {
+  if (variant === "cover") {
+    return (
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/45 to-transparent px-1 pb-1 pt-7">
+        <p className="truncate text-center text-[0.65rem] font-semibold leading-tight text-white drop-shadow-sm sm:text-xs">
+          <span className="sr-only">Owner: </span>
+          {ownerName}&apos;s
+        </p>
+      </div>
+    );
+  }
+  if (variant === "cover-top") {
+    return (
+      <div
+        className="pointer-events-none absolute right-1.5 top-1.5 z-10 max-w-[min(11rem,calc(100%-0.75rem))]"
+        title={`${ownerName}'s copy`}
+      >
+        <p
+          className="truncate rounded-md border border-primary/45 bg-card px-1.5 py-0.5 text-right text-[0.65rem] font-semibold leading-tight text-primary shadow-[0_2px_14px_rgb(0_0_0/0.55)] sm:text-xs"
+        >
+          <span className="sr-only">Owner: </span>
+          {ownerName}&apos;s
+        </p>
+      </div>
+    );
+  }
+  return (
+    <span
+      className="inline-flex max-w-[12rem] shrink-0 items-center truncate rounded-md border border-primary/40 bg-primary/15 px-1.5 py-0.5 text-xs font-semibold text-primary"
+      title={`${ownerName}'s copy`}
+    >
+      {ownerName}&apos;s
+    </span>
   );
 }
 
@@ -207,65 +254,6 @@ function GameCoverBlock({
   );
 }
 
-function GameListRow({
-  game,
-  onRequestCoverPicker,
-}: {
-  game: BggGame;
-  onRequestCoverPicker: () => void;
-}) {
-  return (
-    <article className="board-card flex min-w-0 gap-3 overflow-hidden rounded-lg border border-border bg-card p-3">
-      <div className="h-24 w-24 shrink-0 overflow-hidden rounded-md bg-muted sm:h-28 sm:w-28">
-        <GameCoverBlock
-          game={game}
-          onRequestCoverPicker={onRequestCoverPicker}
-          className="h-full w-full overflow-hidden bg-muted"
-          compactPlaceholder
-        />
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-        <h2 className="line-clamp-2 min-w-0 text-base font-semibold leading-snug text-card-foreground sm:text-lg">
-          <a
-            href={bggBoardGameUrl(game.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm"
-          >
-            {game.name}
-            {game.yearPublished != null ? (
-              <span className="font-normal text-muted-foreground">
-                {" "}
-                ({game.yearPublished})
-              </span>
-            ) : null}
-          </a>
-        </h2>
-        <p className="text-base text-muted-foreground">
-          {formatPlayerCount(game)} players · {formatPlayTimeRange(game)}
-          {game.averageWeight != null ? (
-            <>
-              {" "}
-              · weight{" "}
-              <span className={bggWeightTextClass(game.averageWeight)}>
-                {game.averageWeight.toFixed(2)}
-              </span>
-            </>
-          ) : null}
-        </p>
-        {game.categories.length > 0 ? (
-          <p
-            className="line-clamp-1 min-w-0 text-base text-muted-foreground"
-            title={game.categories.join(", ")}
-          >
-            {game.categories.join(" · ")}
-          </p>
-        ) : null}
-      </div>
-    </article>
-  );
-}
-
 function GameGridThumb({
   game,
   onRequestCoverPicker,
@@ -273,20 +261,29 @@ function GameGridThumb({
   game: BggGame;
   onRequestCoverPicker: () => void;
 }) {
+  const ownerName = friendsGameOwnerName(game);
+  const thumbTitle = ownerName
+    ? `${game.name} (${ownerName}'s copy)`
+    : game.name;
   return (
     <article
       className="board-card overflow-hidden rounded-md border border-border bg-card shadow-sm"
-      title={game.name}
+      title={thumbTitle}
     >
-      <GameCoverBlock
-        game={game}
-        onRequestCoverPicker={onRequestCoverPicker}
-        compactPlaceholder
-        imageLink={{
-          href: bggBoardGameUrl(game.id),
-          ariaLabel: `${game.name} on BoardGameGeek`,
-        }}
-      />
+      <div className="relative w-full">
+        <GameCoverBlock
+          game={game}
+          onRequestCoverPicker={onRequestCoverPicker}
+          compactPlaceholder
+          imageLink={{
+            href: bggBoardGameUrl(game.id),
+            ariaLabel: `${game.name} on BoardGameGeek`,
+          }}
+        />
+        {ownerName ? (
+          <FriendsGameOwnerBadge variant="cover" ownerName={ownerName} />
+        ) : null}
+      </div>
     </article>
   );
 }
@@ -298,9 +295,15 @@ function GameCard({
   game: BggGame;
   onRequestCoverPicker: () => void;
 }) {
+  const ownerName = friendsGameOwnerName(game);
   return (
     <article className="board-card flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
-      <GameCoverBlock game={game} onRequestCoverPicker={onRequestCoverPicker} />
+      <div className="relative w-full">
+        <GameCoverBlock game={game} onRequestCoverPicker={onRequestCoverPicker} />
+        {ownerName ? (
+          <FriendsGameOwnerBadge variant="cover-top" ownerName={ownerName} />
+        ) : null}
+      </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
         <h2 className="line-clamp-1 min-w-0 text-lg font-semibold leading-snug text-card-foreground">
           <a
@@ -327,40 +330,78 @@ function GameCard({
             {game.categories.join(" · ")}
           </p>
         ) : null}
-        {game.owner?.trim() ? (
-          <p className="text-base text-muted-foreground">
-            <span className="font-medium text-foreground">Owner</span>{" "}
-            {game.owner.trim()}
-          </p>
-        ) : null}
-        <dl className="mt-auto flex flex-col gap-y-1 text-base text-muted-foreground sm:grid sm:grid-cols-2 sm:gap-x-2 sm:gap-y-1">
-          <div>
-            <dt className="sr-only">Players</dt>
-            <dd>{formatPlayerCount(game)} players</dd>
-          </div>
+        <dl className="mt-auto flex flex-col gap-y-1 text-base text-muted-foreground">
           <div>
             <dt className="sr-only">Time</dt>
             <dd>{formatPlayTimeRange(game)}</dd>
           </div>
-          {game.averageWeight != null ? (
-            <div className="col-span-2">
-              <dt className="sr-only">Weight</dt>
-              <dd>
-                Weight{" "}
-                <span className={bggWeightTextClass(game.averageWeight)}>
-                  {game.averageWeight.toFixed(2)}
-                </span>
-                <span className="text-muted-foreground"> / 5</span>
-              </dd>
-            </div>
-          ) : null}
           {game.numPlays != null && game.numPlays > 0 ? (
-            <div className="col-span-2">
+            <div>
               <dt className="sr-only">Plays logged</dt>
               <dd>{game.numPlays} plays logged</dd>
             </div>
           ) : null}
         </dl>
+      </div>
+    </article>
+  );
+}
+
+function GameCompactCard({
+  game,
+  onRequestCoverPicker,
+}: {
+  game: BggGame;
+  onRequestCoverPicker: () => void;
+}) {
+  const ownerName = friendsGameOwnerName(game);
+  return (
+    <article className="board-card flex min-w-0 flex-col overflow-hidden rounded-md border border-border bg-card shadow-sm">
+      <div className="relative w-full">
+        <GameCoverBlock
+          game={game}
+          onRequestCoverPicker={onRequestCoverPicker}
+          compactPlaceholder
+        />
+        {ownerName ? (
+          <FriendsGameOwnerBadge variant="cover-top" ownerName={ownerName} />
+        ) : null}
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5 p-2">
+        <h2 className="line-clamp-2 min-w-0 text-sm font-semibold leading-snug text-card-foreground">
+          <a
+            href={bggBoardGameUrl(game.id)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm"
+          >
+            {game.name}
+            {game.yearPublished != null ? (
+              <span className="font-normal text-muted-foreground">
+                {" "}
+                ({game.yearPublished})
+              </span>
+            ) : null}
+          </a>
+        </h2>
+        {game.categories.length > 0 ? (
+          <p
+            className="line-clamp-1 min-w-0 text-xs font-medium leading-tight text-muted-foreground"
+            title={game.categories.join(", ")}
+            aria-label={`Categories: ${game.categories.join(", ")}`}
+          >
+            {game.categories.join(" · ")}
+          </p>
+        ) : null}
+        <p className="mt-auto line-clamp-2 min-w-0 text-xs leading-tight text-muted-foreground">
+          {formatPlayTimeRange(game)}
+          {game.numPlays != null && game.numPlays > 0 ? (
+            <>
+              {" "}
+              · {game.numPlays} plays
+            </>
+          ) : null}
+        </p>
       </div>
     </article>
   );
@@ -556,20 +597,23 @@ export function Dashboard() {
           className={
             shelfView === "card"
               ? "grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-              : shelfView === "list"
-                ? "flex flex-col gap-3"
+              : shelfView === "compact"
+                ? "grid grid-cols-3 gap-2 min-[400px]:grid-cols-4 sm:grid-cols-4 sm:gap-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7"
                 : "grid grid-cols-4 gap-1.5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12"
           }
         >
           {filtered.map((game) => (
-            <li key={game.id} className={shelfView === "list" ? "min-w-0" : undefined}>
+            <li
+              key={game.id}
+              className={shelfView === "compact" ? "min-w-0" : undefined}
+            >
               {shelfView === "card" ? (
                 <GameCard
                   game={game}
                   onRequestCoverPicker={() => setCoverModalGameId(game.id)}
                 />
-              ) : shelfView === "list" ? (
-                <GameListRow
+              ) : shelfView === "compact" ? (
+                <GameCompactCard
                   game={game}
                   onRequestCoverPicker={() => setCoverModalGameId(game.id)}
                 />
