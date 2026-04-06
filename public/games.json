@@ -65,7 +65,12 @@
         "Strategy",
         "Deduction"
       ],
-      "mechanics": []
+      "mechanics": [
+        "Hidden Roles",
+        "Simultaneous Action Selection",
+        "Team-Based Game",
+        "Voting"
+      ]
     },
     {
       "id": "230802",
@@ -182,7 +187,37 @@
       "categories": [
         "Family"
       ],
-      "mechanics": []
+      "mechanics": [
+        "Area Majority / Influence",
+        "Tile Placement"
+      ]
+    },
+    {
+      "id": "13",
+      "name": "Catan",
+      "yearPublished": 1995,
+      "thumbnail": "https://cf.geekdo-images.com/W3Bsga_uLP9kO91gZ7H8yw__micro@2x/img/pBrtduZXPziUDS0G3uVjlg7MBk8=/fit-in/128x128/filters:strip_icc()/pic2419375.jpg",
+      "image": "https://cf.geekdo-images.com/W3Bsga_uLP9kO91gZ7H8yw__large/img/YkcG0na-WYvjzCGkooetxsFY0mU=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2419375.jpg",
+      "minPlayers": 3,
+      "maxPlayers": 4,
+      "playingTime": 60,
+      "minPlayTime": 60,
+      "maxPlayTime": 120,
+      "averageWeight": 2.43,
+      "numPlays": 0,
+      "categories": [
+        "Family",
+        "Strategy"
+      ],
+      "mechanics": [
+        "Dice Rolling",
+        "Hand Management",
+        "Modular Board",
+        "Negotiation",
+        "Network and Route Building",
+        "Trading"
+      ],
+      "owner": "Zach"
     },
     {
       "id": "205398",
@@ -268,7 +303,11 @@
       "categories": [
         "Strategy"
       ],
-      "mechanics": []
+      "mechanics": [
+        "Deck, Bag, and Pool Building",
+        "Hand Management",
+        "Open Drafting"
+      ]
     },
     {
       "id": "199792",
@@ -313,7 +352,16 @@
         "Family",
         "Strategy"
       ],
-      "mechanics": []
+      "mechanics": [
+        "Dice Rolling",
+        "Modular Board",
+        "Pick-up and Deliver",
+        "Point to Point Movement",
+        "Rondel",
+        "Set Collection",
+        "Variable Set-up",
+        "Worker Placement"
+      ]
     },
     {
       "id": "257501",
@@ -449,7 +497,13 @@
         "Strategy",
         "Coop"
       ],
-      "mechanics": []
+      "mechanics": [
+        "Cooperative Game",
+        "Deck, Bag, and Pool Building",
+        "Hand Management",
+        "Scenario / Mission / Campaign Game",
+        "Simultaneous Action Selection"
+      ]
     },
     {
       "id": "30549",
@@ -497,6 +551,31 @@
         "Tile Placement",
         "Time Track"
       ]
+    },
+    {
+      "id": "169786",
+      "name": "Scythe",
+      "yearPublished": 2016,
+      "thumbnail": "https://cf.geekdo-images.com/Vf_rW03DVukbkbiCsz69VA__micro@2x/img/JDMEvexokLY2gg-1wdvlwEPRvVs=/fit-in/128x128/filters:strip_icc()/pic2323719.jpg",
+      "image": "https://cf.geekdo-images.com/Vf_rW03DVukbkbiCsz69VA__large/img/IO1wR5wZstXf7tZUWcsGBdly5Rc=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2323719.jpg",
+      "minPlayers": 1,
+      "maxPlayers": 5,
+      "playingTime": 115,
+      "minPlayTime": 90,
+      "maxPlayTime": 140,
+      "averageWeight": 3.45,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Action Retrieval",
+        "Area Majority / Influence",
+        "Grid Movement",
+        "Variable Player Powers",
+        "Variable Set-up"
+      ],
+      "owner": "Jan"
     },
     {
       "id": "162886",
@@ -548,6 +627,30 @@
         "Real-Time",
         "Team-Based Game"
       ]
+    },
+    {
+      "id": "167791",
+      "name": "Terraforming Mars",
+      "yearPublished": 2016,
+      "thumbnail": "https://cf.geekdo-images.com/URkI3cTZ9NHdlPNRPSd2_g__micro@2x/img/vUZJ-A-bXsvfPFwv1FWLizghQTQ=/fit-in/128x128/filters:strip_icc()/pic2891964.jpg",
+      "image": "https://cf.geekdo-images.com/URkI3cTZ9NHdlPNRPSd2_g__large/img/mKgsa8PEmatRNbHQLr1ky-1xa-Q=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2891964.jpg",
+      "minPlayers": 1,
+      "maxPlayers": 5,
+      "playingTime": 120,
+      "minPlayTime": 120,
+      "maxPlayTime": 120,
+      "averageWeight": 3.26,
+      "numPlays": 0,
+      "categories": [
+        "Strategy"
+      ],
+      "mechanics": [
+        "Card Drafting",
+        "Hand Management",
+        "Tile Placement",
+        "Variable Player Powers"
+      ],
+      "owner": "Max"
     },
     {
       "id": "128882",

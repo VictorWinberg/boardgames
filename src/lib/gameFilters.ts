@@ -6,9 +6,20 @@ export type FilterState = {
   minWeight: number | null;
   maxWeight: number | null;
   category: string | null;
+  /** When false, games with `owner` set are excluded */
+  includeFriendsGames: boolean;
 };
 
+/** True if this row is someone else’s game (has a non-empty `owner`). */
+export function isFriendsOwnedGame(g: BggGame): boolean {
+  return typeof g.owner === "string" && g.owner.trim() !== "";
+}
+
 export function matchesFilters(g: BggGame, f: FilterState): boolean {
+  if (!f.includeFriendsGames && isFriendsOwnedGame(g)) {
+    return false;
+  }
+
   if (f.players != null) {
     const p = f.players;
     const minOk = g.minPlayers == null || g.minPlayers <= p;

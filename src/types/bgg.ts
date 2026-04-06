@@ -26,6 +26,8 @@ export interface BggGame {
   /** Display buckets (e.g. Family, Party, Strategy, Coop, Deduction) */
   categories: string[];
   mechanics: string[];
+  /** Friend’s copy (not in your BGG collection); hidden unless “friends’ games” filter is on */
+  owner?: string | null;
   /** All Geekdo user-gallery options; pick cover in the app or via exported games.json */
   geekdoImages?: GeekdoGalleryImage[];
 }

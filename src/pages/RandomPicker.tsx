@@ -8,6 +8,7 @@ import { bggBoardGameUrl } from "@/lib/bggGameUrl";
 import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import {
   MAX_TIME_BY_INDEX,
+  isFriendsOwnedGame,
   matchesFilters,
   weightFromSlider,
   type FilterState,
@@ -38,6 +39,8 @@ export function RandomPicker() {
     setMaxWeightActive,
     category,
     setCategory,
+    includeFriendsGames,
+    setIncludeFriendsGames,
   } = useGameFilters();
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
@@ -57,6 +60,7 @@ export function RandomPicker() {
       minWeight: minWeightActive ? weightFromSlider(minWeightTenths) : null,
       maxWeight: maxWeightActive ? weightFromSlider(maxWeightTenths) : null,
       category,
+      includeFriendsGames,
     }),
     [
       players,
@@ -66,8 +70,16 @@ export function RandomPicker() {
       maxWeightActive,
       maxWeightTenths,
       category,
+      includeFriendsGames,
     ]
   );
+
+  const pickerEligibleCount = useMemo(() => {
+    if (status !== "ok" || !data) return 0;
+    return data.games.filter(
+      (g) => includeFriendsGames || !isFriendsOwnedGame(g),
+    ).length;
+  }, [status, data, includeFriendsGames]);
 
   const pool = useMemo(() => {
     if (status !== "ok" || !data) return [];
@@ -172,7 +184,7 @@ export function RandomPicker() {
           <GameFiltersPanel
             games={data.games}
             matchCount={pool.length}
-            totalCount={data.games.length}
+            totalCount={pickerEligibleCount}
             players={players}
             setPlayers={setPlayers}
             maxTimeIndex={maxTimeIndex}
@@ -187,6 +199,8 @@ export function RandomPicker() {
             setMaxWeightActive={setMaxWeightActive}
             category={category}
             setCategory={setCategory}
+            includeFriendsGames={includeFriendsGames}
+            setIncludeFriendsGames={setIncludeFriendsGames}
           />
         </div>
       </div>
@@ -283,8 +297,8 @@ export function RandomPicker() {
               <dl
                 className={
                   showResultHero
-                    ? "mt-5 grid grid-cols-2 gap-3 text-base text-muted-foreground sm:grid-cols-4"
-                    : "mt-3 grid grid-cols-2 gap-2 text-base text-muted-foreground"
+                    ? "mt-5 grid grid-cols-1 gap-3 text-base text-muted-foreground sm:grid-cols-4"
+                    : "mt-3 grid grid-cols-1 gap-2 text-base text-muted-foreground sm:grid-cols-2"
                 }
               >
                 <div>
@@ -327,6 +341,18 @@ export function RandomPicker() {
                     Categories:{" "}
                   </span>
                   {picked.categories.join(", ")}
+                </p>
+              ) : null}
+              {picked.owner?.trim() ? (
+                <p
+                  className={
+                    showResultHero
+                      ? "mt-3 text-base text-muted-foreground"
+                      : "mt-2 text-base text-muted-foreground"
+                  }
+                >
+                  <span className="font-medium text-foreground">Owner</span>{" "}
+                  {picked.owner.trim()}
                 </p>
               ) : null}
               <a

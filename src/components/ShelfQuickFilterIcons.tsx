@@ -148,7 +148,7 @@ export function ShelfQuickFilterIcons({
         >
           <IconUsers className="h-[1.125rem] w-[1.125rem] shrink-0" />
           {playersActive ? (
-            <span className="min-w-0 flex-1 truncate text-left text-xs font-semibold tabular-nums text-current">
+            <span className="hidden min-w-0 flex-1 truncate text-left text-xs font-semibold tabular-nums text-current sm:block">
               {players}
             </span>
           ) : null}
@@ -225,7 +225,7 @@ export function ShelfQuickFilterIcons({
         >
           <IconTag className="h-[1.125rem] w-[1.125rem] shrink-0" />
           {categoryActive ? (
-            <span className="min-w-0 flex-1 truncate text-left text-xs font-medium leading-tight text-current">
+            <span className="hidden min-w-0 flex-1 truncate text-left text-xs font-medium leading-tight text-current sm:block">
               {category}
             </span>
           ) : null}

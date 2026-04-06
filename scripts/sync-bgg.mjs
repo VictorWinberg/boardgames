@@ -263,6 +263,36 @@ async function main() {
 
   const byId = new Map(collectionRows.map((r) => [r.id, { ...r }]));
 
+  /** @type {Map<string, unknown[]>} */
+  const existingGeekdoById = new Map();
+  /** @type {Map<string, string>} — games not in your collection, kept from previous games.json */
+  const friendOwnerById = new Map();
+  try {
+    const prevRaw = await readFile(OUT, "utf8");
+    const prev = JSON.parse(prevRaw);
+    for (const pg of prev.games || []) {
+      const id = pg?.id != null ? String(pg.id) : null;
+      if (!id) continue;
+      if (Array.isArray(pg.geekdoImages) && pg.geekdoImages.length) {
+        existingGeekdoById.set(id, pg.geekdoImages);
+      }
+      const owner = typeof pg?.owner === "string" ? pg.owner.trim() : "";
+      if (owner && !byId.has(id)) {
+        friendOwnerById.set(id, owner);
+        byId.set(id, {
+          id,
+          name: pg.name || `Game ${id}`,
+          yearPublished: pg.yearPublished ?? null,
+          thumbnail: pg.thumbnail ?? null,
+          image: pg.image ?? null,
+          numPlays: null,
+        });
+      }
+    }
+  } catch {
+    /* no previous file */
+  }
+
   const ids = [...byId.keys()];
   const batches = chunk(ids, BATCH);
   console.log(
@@ -282,23 +312,11 @@ async function main() {
     if (b < batches.length - 1) await sleep(BETWEEN_BATCH_MS);
   }
 
-  /** @type {Map<string, unknown[]>} */
-  let existingGeekdoById = new Map();
-  try {
-    const prevRaw = await readFile(OUT, "utf8");
-    const prev = JSON.parse(prevRaw);
-    for (const pg of prev.games || []) {
-      if (pg?.id != null && Array.isArray(pg.geekdoImages) && pg.geekdoImages.length)
-        existingGeekdoById.set(String(pg.id), pg.geekdoImages);
-    }
-  } catch {
-    /* no previous file */
-  }
-
   const games = [...byId.values()]
     .map((g) => {
       const id = String(g.id);
       const geekdoImages = existingGeekdoById.get(id);
+      const owner = friendOwnerById.get(id);
       return {
         id,
         name: g.name,
@@ -315,6 +333,7 @@ async function main() {
         categories: Array.isArray(g.categories) ? g.categories : [],
         mechanics: Array.isArray(g.mechanics) ? g.mechanics : [],
         ...(geekdoImages ? { geekdoImages } : {}),
+        ...(owner ? { owner } : {}),
       };
     })
     .sort((a, b) =>

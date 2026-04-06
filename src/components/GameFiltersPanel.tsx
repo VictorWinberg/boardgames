@@ -13,9 +13,9 @@ import {
 } from "@/lib/gameFilters";
 import type { BggGame } from "@/types/bgg";
 
-/** Label | current value | control — same columns for every row */
+/** Label | current value | control — value column hidden below sm */
 const FILTER_ROW_GRID =
-  "grid grid-cols-[7.5rem_minmax(0,10rem)_minmax(0,1fr)] gap-x-2 gap-y-1.5 items-start";
+  "grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-2 gap-y-1.5 items-start sm:grid-cols-[7.5rem_minmax(0,10rem)_minmax(0,1fr)]";
 
 export type GameFiltersPanelProps = {
   games: BggGame[];
@@ -35,6 +35,8 @@ export type GameFiltersPanelProps = {
   setMaxWeightActive: (v: boolean) => void;
   category: string | null;
   setCategory: (c: string | null) => void;
+  includeFriendsGames: boolean;
+  setIncludeFriendsGames: (v: boolean) => void;
 };
 
 export function GameFiltersPanel({
@@ -55,6 +57,8 @@ export function GameFiltersPanel({
   setMaxWeightActive,
   category,
   setCategory,
+  includeFriendsGames,
+  setIncludeFriendsGames,
 }: GameFiltersPanelProps) {
   const categoryOptions = collectCategories(games);
   const maxTimeLabel =
@@ -70,6 +74,7 @@ export function GameFiltersPanel({
     ? `${weightFromSlider(maxWeightTenths).toFixed(1)} / 5`
     : "Any";
   const categoryValueLabel = category ?? "Any";
+  const friendsGamesValueLabel = includeFriendsGames ? "On" : "Off";
   const minWeightSliderStep = weightFilterSliderStep(
     minWeightActive,
     minWeightTenths,
@@ -90,7 +95,7 @@ export function GameFiltersPanel({
         >
           Players
         </span>
-        <span className="min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground">
+        <span className="hidden min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground sm:block">
           {playersLabel}
         </span>
         <div className="min-w-0">
@@ -123,7 +128,7 @@ export function GameFiltersPanel({
             Category
           </span>
           <span
-            className="min-w-0 truncate text-left text-base leading-tight text-muted-foreground"
+            className="hidden min-w-0 truncate text-left text-base leading-tight text-muted-foreground sm:block"
             title={category ?? undefined}
           >
             {categoryValueLabel}
@@ -161,6 +166,42 @@ export function GameFiltersPanel({
         </div>
       ) : null}
 
+      <div className={FILTER_ROW_GRID}>
+        <span
+          className="text-base font-medium text-foreground"
+          id="filter-friends-games-label"
+        >
+          Friends&apos; games
+        </span>
+        <span className="hidden min-w-0 text-left text-base leading-tight text-muted-foreground sm:block">
+          {friendsGamesValueLabel}
+        </span>
+        <div
+          className="flex min-w-0 flex-wrap gap-1.5"
+          role="radiogroup"
+          aria-labelledby="filter-friends-games-label"
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked={!includeFriendsGames}
+            onClick={() => setIncludeFriendsGames(false)}
+            className={filterPillClass(!includeFriendsGames)}
+          >
+            Off
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={includeFriendsGames}
+            onClick={() => setIncludeFriendsGames(true)}
+            className={filterPillClass(includeFriendsGames)}
+          >
+            On
+          </button>
+        </div>
+      </div>
+
       <div className="space-y-2 border-t border-border pt-3">
         <div className={FILTER_ROW_GRID}>
           <span
@@ -169,7 +210,7 @@ export function GameFiltersPanel({
           >
             Min weight
           </span>
-          <span className="min-w-0 text-left text-base tabular-nums text-muted-foreground">
+          <span className="hidden min-w-0 text-left text-base tabular-nums text-muted-foreground sm:block">
             {minWeightValueLabel}
           </span>
           <div className="min-w-0">
@@ -205,7 +246,7 @@ export function GameFiltersPanel({
           >
             Max weight
           </span>
-          <span className="min-w-0 text-left text-base tabular-nums text-muted-foreground">
+          <span className="hidden min-w-0 text-left text-base tabular-nums text-muted-foreground sm:block">
             {maxWeightValueLabel}
           </span>
           <div className="min-w-0">
@@ -241,7 +282,7 @@ export function GameFiltersPanel({
           >
             Max time
           </span>
-          <span className="min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground">
+          <span className="hidden min-w-0 text-left text-base leading-tight tabular-nums text-muted-foreground sm:block">
             {maxTimeLabel}
           </span>
           <div className="min-w-0">
