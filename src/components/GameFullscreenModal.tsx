@@ -1,6 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { bggBoardGameUrl } from "@/lib/bggGameUrl";
+import {
+  FULLSCREEN_TRANSITION_MS,
+  fullscreenBackdropClasses,
+  fullscreenPanelClasses,
+} from "@/lib/fullscreenMotion";
 import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import { formatPlayerCount } from "@/lib/formatPlayerCount";
 import { formatPlayTimeRange } from "@/lib/formatPlayTimeRange";
@@ -50,9 +55,10 @@ function StatBlock({
         {label}
       </h3>
       <p
-        className={["mt-0.5 text-base", valueClassName ?? "text-foreground"].join(
-          " ",
-        )}
+        className={[
+          "mt-0.5 text-base",
+          valueClassName ?? "text-foreground",
+        ].join(" ")}
       >
         {value}
       </p>
@@ -74,10 +80,7 @@ function DescriptionBody({ text }: { text: string }) {
   return (
     <div className="space-y-2">
       {parts.map((sentence, i) => (
-        <p
-          key={i}
-          className="text-base leading-relaxed text-muted-foreground"
-        >
+        <p key={i} className="text-base leading-relaxed text-muted-foreground">
           {sentence}
         </p>
       ))}
@@ -99,28 +102,55 @@ export function GameFullscreenModal({
   onClose,
   onRequestCoverPicker,
 }: Props) {
+  const gameRef = useRef<BggGame | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [entered, setEntered] = useState(false);
+
   useEffect(() => {
-    if (!open) return;
+    if (open && game) {
+      gameRef.current = game;
+      setMounted(true);
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setEntered(true));
+      });
+      return () => cancelAnimationFrame(id);
+    }
+  }, [open, game]);
+
+  useEffect(() => {
+    if (!open && mounted) {
+      setEntered(false);
+      const t = window.setTimeout(() => {
+        setMounted(false);
+        gameRef.current = null;
+      }, FULLSCREEN_TRANSITION_MS);
+      return () => window.clearTimeout(t);
+    }
+  }, [open, mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [open]);
+  }, [mounted]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!mounted) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+  }, [mounted, onClose]);
 
-  if (!open || !game) return null;
+  const displayGame = game ?? gameRef.current;
+  if (!mounted || !displayGame) return null;
 
-  const src = game.image || game.thumbnail;
-  const titleId = `game-fullscreen-title-${game.id}`;
+  const src = displayGame.image || displayGame.thumbnail;
+  const titleId = `game-fullscreen-title-${displayGame.id}`;
 
   return (
     <div
@@ -131,21 +161,29 @@ export function GameFullscreenModal({
     >
       <button
         type="button"
-        className="absolute inset-0 bg-background/90 backdrop-blur-sm"
+        className={[
+          "absolute inset-0 bg-background/90 backdrop-blur-sm",
+          fullscreenBackdropClasses(entered),
+        ].join(" ")}
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="board-card relative flex h-full w-full max-h-full max-w-5xl flex-col border-border bg-card sm:max-h-[min(100dvh,56rem)] sm:rounded-xl sm:border">
+      <div
+        className={[
+          "board-card relative z-10 flex h-full w-full max-h-full max-w-5xl flex-col border-border bg-card sm:max-h-[min(100dvh,56rem)] sm:rounded-xl sm:border",
+          fullscreenPanelClasses(entered),
+        ].join(" ")}
+      >
         <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between gap-2 px-3 py-2 sm:relative sm:z-auto sm:gap-3 sm:border-b sm:border-border sm:bg-card sm:px-5 sm:py-3">
           <h2
             id={titleId}
             className="min-w-0 text-base font-semibold leading-tight text-white [text-shadow:0_0_1px_rgba(0,0,0,0.95),0_1px_2px_rgba(0,0,0,0.92),0_2px_8px_rgba(0,0,0,0.65),0_0_20px_rgba(0,0,0,0.45)] sm:text-xl sm:leading-normal sm:text-foreground sm:[text-shadow:none]"
           >
-            {game.name}
-            {game.yearPublished != null ? (
+            {displayGame.name}
+            {displayGame.yearPublished != null ? (
               <span className="font-normal text-white/85 sm:text-muted-foreground">
                 {" "}
-                ({game.yearPublished})
+                ({displayGame.yearPublished})
               </span>
             ) : null}
           </h2>
@@ -158,13 +196,15 @@ export function GameFullscreenModal({
           </button>
         </div>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain sm:flex-row">
-          <div className="flex min-h-[40vh] shrink-0 items-center justify-center bg-muted/40 px-6 pt-8 pb-2 sm:min-h-0 sm:w-[min(100%,28rem)] sm:flex-1 sm:max-w-[50%] sm:px-8 sm:pt-10 sm:pb-4">
+          <div className="flex min-h-0 shrink-0 items-center justify-center bg-muted/40 px-6 pt-8 pb-2 sm:min-h-0 sm:w-[min(100%,28rem)] sm:flex-1 sm:max-w-[50%] sm:px-8 sm:pt-10 sm:pb-4">
             {src ? (
-              <img
-                src={src}
-                alt=""
-                className="max-h-[min(70vh,100%)] w-full max-w-full object-contain shadow-md"
-              />
+              <div className="aspect-square w-full max-w-[min(100%,min(70dvh,28rem))] shrink-0 overflow-hidden rounded-lg shadow-md sm:max-w-[min(100%,min(70dvh,24rem))]">
+                <img
+                  src={src}
+                  alt=""
+                  className="h-full w-full object-contain"
+                />
+              </div>
             ) : (
               <div className="flex flex-col items-center gap-3 px-2 text-center">
                 <p className="text-base text-muted-foreground">
@@ -186,13 +226,13 @@ export function GameFullscreenModal({
             )}
           </div>
           <div className="flex min-w-0 flex-col gap-4 border-t border-border p-4 sm:min-w-[20rem] sm:max-w-xl sm:flex-1 sm:border-l sm:border-t-0 sm:p-5">
-            {game.owner?.trim() ? (
+            {displayGame.owner?.trim() ? (
               <p className="text-sm font-semibold text-primary">
-                {game.owner.trim()}&apos;s copy
+                {displayGame.owner.trim()}&apos;s copy
               </p>
             ) : null}
 
-            {game.description?.trim() ? (
+            {displayGame.description?.trim() ? (
               <section aria-labelledby={`${titleId}-description`}>
                 <h3
                   id={`${titleId}-description`}
@@ -200,7 +240,7 @@ export function GameFullscreenModal({
                 >
                   Description
                 </h3>
-                <DescriptionBody text={game.description.trim()} />
+                <DescriptionBody text={displayGame.description.trim()} />
               </section>
             ) : null}
 
@@ -208,53 +248,47 @@ export function GameFullscreenModal({
               aria-label="Game stats"
               className="grid grid-cols-2 gap-x-4 gap-y-3"
             >
-              <StatBlock label="Players" value={playersLine(game)} />
-              <StatBlock label="Play time" value={formatPlayTimeRange(game)} />
+              <StatBlock label="Players" value={playersLine(displayGame)} />
+              <StatBlock
+                label="Play time"
+                value={formatPlayTimeRange(displayGame)}
+              />
               <StatBlock
                 label="Complexity"
-                value={formatWeight(game.averageWeight)}
+                value={formatWeight(displayGame.averageWeight)}
                 valueClassName={
-                  game.averageWeight != null
-                    ? bggWeightTextClass(game.averageWeight)
+                  displayGame.averageWeight != null
+                    ? bggWeightTextClass(displayGame.averageWeight)
                     : undefined
                 }
               />
+              {displayGame.categories.length > 0 ? (
+                <div className="min-w-0" aria-labelledby={`${titleId}-categories`}>
+                  <h3
+                    id={`${titleId}-categories`}
+                    className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
+                    Categories
+                  </h3>
+                  <div className="mt-0.5">
+                    <TagList items={displayGame.categories} />
+                  </div>
+                </div>
+              ) : null}
             </section>
 
-            {game.geekdoImages != null && game.geekdoImages.length > 0 ? (
+            {displayGame.geekdoImages != null &&
+            displayGame.geekdoImages.length > 0 ? (
               <p className="text-sm text-muted-foreground">
-                {game.geekdoImages.length} alternate cover
-                {game.geekdoImages.length === 1 ? "" : "s"} in gallery data
+                {displayGame.geekdoImages.length} alternate cover
+                {displayGame.geekdoImages.length === 1 ? "" : "s"} in gallery
+                data
               </p>
-            ) : null}
-
-            {game.categories.length > 0 ? (
-              <section aria-labelledby={`${titleId}-categories`}>
-                <h3
-                  id={`${titleId}-categories`}
-                  className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
-                >
-                  Categories
-                </h3>
-                <TagList items={game.categories} />
-              </section>
-            ) : null}
-
-            {game.mechanics.length > 0 ? (
-              <section aria-labelledby={`${titleId}-mechanics`}>
-                <h3
-                  id={`${titleId}-mechanics`}
-                  className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
-                >
-                  Mechanics
-                </h3>
-                <TagList items={game.mechanics} />
-              </section>
             ) : null}
 
             <p className="mt-auto pt-2">
               <a
-                href={bggBoardGameUrl(game.id)}
+                href={bggBoardGameUrl(displayGame.id)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-base font-medium text-primary underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm"
