@@ -11,6 +11,7 @@ import {
   weightFilterStepToTenths,
   weightFromSlider,
 } from "@/lib/gameFilters";
+import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import type { BggGame } from "@/types/bgg";
 
 /** Label | current value | control — value column hidden below sm */
@@ -210,7 +211,14 @@ export function GameFiltersPanel({
           >
             Min weight
           </span>
-          <span className="hidden min-w-0 text-left text-base tabular-nums text-muted-foreground sm:block">
+          <span
+            className={[
+              "hidden min-w-0 text-left text-base sm:block",
+              minWeightActive
+                ? bggWeightTextClass(weightFromSlider(minWeightTenths))
+                : "tabular-nums text-muted-foreground",
+            ].join(" ")}
+          >
             {minWeightValueLabel}
           </span>
           <div className="min-w-0">
@@ -246,7 +254,14 @@ export function GameFiltersPanel({
           >
             Max weight
           </span>
-          <span className="hidden min-w-0 text-left text-base tabular-nums text-muted-foreground sm:block">
+          <span
+            className={[
+              "hidden min-w-0 text-left text-base sm:block",
+              maxWeightActive
+                ? bggWeightTextClass(weightFromSlider(maxWeightTenths))
+                : "tabular-nums text-muted-foreground",
+            ].join(" ")}
+          >
             {maxWeightValueLabel}
           </span>
           <div className="min-w-0">

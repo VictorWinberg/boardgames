@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 
 import { GameFiltersPanel } from "@/components/GameFiltersPanel";
+import { GameFullscreenModal } from "@/components/GameFullscreenModal";
 import { GeekdoCoverModal } from "@/components/GeekdoCoverModal";
 import { ShelfQuickFilterIcons } from "@/components/ShelfQuickFilterIcons";
 import { useGameFilters } from "@/context/game-filters-context";
 import { useGamesData } from "@/context/games-data-context";
-import { bggBoardGameUrl } from "@/lib/bggGameUrl";
 import {
   MAX_TIME_BY_INDEX,
   isFriendsOwnedGame,
@@ -81,6 +81,23 @@ function IconViewGrid({ className }: { className?: string }) {
       <rect x="14" y="3" width="7" height="7" rx="1" />
       <rect x="3" y="14" width="7" height="7" rx="1" />
       <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  );
+}
+
+function IconClearSearch({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M18 6 6 18M6 6l12 12" />
     </svg>
   );
 }
@@ -182,31 +199,42 @@ function FriendsGameOwnerBadge({
   );
 }
 
+function activateOnKey(e: KeyboardEvent, action: () => void): void {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    action();
+  }
+}
+
 function GameCoverBlock({
   game,
   onRequestCoverPicker,
   className,
-  imageLink,
+  onImageClick,
+  onEmptyCoverPrimary,
   compactPlaceholder = false,
 }: {
   game: BggGame;
   onRequestCoverPicker: () => void;
   className?: string;
-  /** When set and a cover exists, wraps the image in a link (avoid nesting link + cover-picker button). */
-  imageLink?: { href: string; ariaLabel: string };
+  /** When set and a cover exists, image opens fullscreen (keyboard-activable). */
+  onImageClick?: () => void;
+  /** When set, empty-cover tap runs this instead of the cover picker (e.g. grid → fullscreen). */
+  onEmptyCoverPrimary?: () => void;
   compactPlaceholder?: boolean;
 }) {
   const src = game.image || game.thumbnail;
   const boxClass = className ?? "aspect-square w-full overflow-hidden bg-muted";
-  if (src && imageLink) {
+  if (src && onImageClick) {
     return (
       <div className={boxClass}>
-        <a
-          href={imageLink.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block h-full w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={imageLink.ariaLabel}
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label={`View ${game.name} fullscreen`}
+          className="block h-full w-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          onClick={onImageClick}
+          onKeyDown={(e) => activateOnKey(e, onImageClick)}
         >
           <img
             src={src}
@@ -214,7 +242,7 @@ function GameCoverBlock({
             className="h-full w-full object-cover"
             loading="lazy"
           />
-        </a>
+        </div>
       </div>
     );
   }
@@ -230,14 +258,14 @@ function GameCoverBlock({
       ) : (
         <button
           type="button"
-          onClick={onRequestCoverPicker}
+          onClick={onEmptyCoverPrimary ?? onRequestCoverPicker}
           className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-0.5 px-1 text-center text-base text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {compactPlaceholder ? (
             <>
               <span className="text-base leading-tight">No cover</span>
               <span className="text-base font-medium leading-tight text-primary">
-                Choose
+                {onEmptyCoverPrimary ? "Details" : "Choose"}
               </span>
             </>
           ) : (
@@ -257,9 +285,11 @@ function GameCoverBlock({
 function GameGridThumb({
   game,
   onRequestCoverPicker,
+  onOpenFullscreen,
 }: {
   game: BggGame;
   onRequestCoverPicker: () => void;
+  onOpenFullscreen: () => void;
 }) {
   const ownerName = friendsGameOwnerName(game);
   const thumbTitle = ownerName
@@ -275,10 +305,8 @@ function GameGridThumb({
           game={game}
           onRequestCoverPicker={onRequestCoverPicker}
           compactPlaceholder
-          imageLink={{
-            href: bggBoardGameUrl(game.id),
-            ariaLabel: `${game.name} on BoardGameGeek`,
-          }}
+          onImageClick={onOpenFullscreen}
+          onEmptyCoverPrimary={onOpenFullscreen}
         />
         {ownerName ? (
           <FriendsGameOwnerBadge variant="cover" ownerName={ownerName} />
@@ -291,35 +319,41 @@ function GameGridThumb({
 function GameCard({
   game,
   onRequestCoverPicker,
+  onOpenFullscreen,
 }: {
   game: BggGame;
   onRequestCoverPicker: () => void;
+  onOpenFullscreen: () => void;
 }) {
   const ownerName = friendsGameOwnerName(game);
   return (
     <article className="board-card flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
       <div className="relative w-full">
-        <GameCoverBlock game={game} onRequestCoverPicker={onRequestCoverPicker} />
+        <GameCoverBlock
+          game={game}
+          onRequestCoverPicker={onRequestCoverPicker}
+          onImageClick={onOpenFullscreen}
+        />
         {ownerName ? (
           <FriendsGameOwnerBadge variant="cover-top" ownerName={ownerName} />
         ) : null}
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={`${game.name}, view fullscreen details`}
+        className="flex flex-1 cursor-pointer flex-col gap-1 p-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+        onClick={onOpenFullscreen}
+        onKeyDown={(e) => activateOnKey(e, onOpenFullscreen)}
+      >
         <h2 className="line-clamp-1 min-w-0 text-lg font-semibold leading-snug text-card-foreground">
-          <a
-            href={bggBoardGameUrl(game.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm"
-          >
-            {game.name}
-            {game.yearPublished != null ? (
-              <span className="font-normal text-muted-foreground">
-                {" "}
-                ({game.yearPublished})
-              </span>
-            ) : null}
-          </a>
+          {game.name}
+          {game.yearPublished != null ? (
+            <span className="font-normal text-muted-foreground">
+              {" "}
+              ({game.yearPublished})
+            </span>
+          ) : null}
         </h2>
         {game.categories.length > 0 ? (
           <p
@@ -350,9 +384,11 @@ function GameCard({
 function GameCompactCard({
   game,
   onRequestCoverPicker,
+  onOpenFullscreen,
 }: {
   game: BggGame;
   onRequestCoverPicker: () => void;
+  onOpenFullscreen: () => void;
 }) {
   const ownerName = friendsGameOwnerName(game);
   return (
@@ -362,27 +398,28 @@ function GameCompactCard({
           game={game}
           onRequestCoverPicker={onRequestCoverPicker}
           compactPlaceholder
+          onImageClick={onOpenFullscreen}
         />
         {ownerName ? (
           <FriendsGameOwnerBadge variant="cover-top" ownerName={ownerName} />
         ) : null}
       </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5 p-2">
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={`${game.name}, view fullscreen details`}
+        className="flex min-w-0 flex-1 cursor-pointer flex-col gap-0.5 p-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+        onClick={onOpenFullscreen}
+        onKeyDown={(e) => activateOnKey(e, onOpenFullscreen)}
+      >
         <h2 className="line-clamp-2 min-w-0 text-sm font-semibold leading-snug text-card-foreground">
-          <a
-            href={bggBoardGameUrl(game.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm"
-          >
-            {game.name}
-            {game.yearPublished != null ? (
-              <span className="font-normal text-muted-foreground">
-                {" "}
-                ({game.yearPublished})
-              </span>
-            ) : null}
-          </a>
+          {game.name}
+          {game.yearPublished != null ? (
+            <span className="font-normal text-muted-foreground">
+              {" "}
+              ({game.yearPublished})
+            </span>
+          ) : null}
         </h2>
         {game.categories.length > 0 ? (
           <p
@@ -429,6 +466,7 @@ export function Dashboard() {
   } = useGameFilters();
   const [query, setQuery] = useState("");
   const [coverModalGameId, setCoverModalGameId] = useState<string | null>(null);
+  const [fullscreenGameId, setFullscreenGameId] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [shelfView, setShelfView] = useState<ShelfViewMode>(readShelfViewMode);
 
@@ -440,6 +478,11 @@ export function Dashboard() {
     if (!coverModalGameId || !data) return null;
     return data.games.find((g) => g.id === coverModalGameId) ?? null;
   }, [coverModalGameId, data]);
+
+  const fullscreenGame = useMemo(() => {
+    if (!fullscreenGameId || !data) return null;
+    return data.games.find((g) => g.id === fullscreenGameId) ?? null;
+  }, [fullscreenGameId, data]);
 
   const maxTime = MAX_TIME_BY_INDEX[maxTimeIndex] ?? null;
 
@@ -503,6 +546,16 @@ export function Dashboard() {
 
   return (
     <div className="space-y-8">
+      <GameFullscreenModal
+        open={fullscreenGameId != null}
+        game={fullscreenGame}
+        onClose={() => setFullscreenGameId(null)}
+        onRequestCoverPicker={
+          fullscreenGame
+            ? () => setCoverModalGameId(fullscreenGame.id)
+            : undefined
+        }
+      />
       <GeekdoCoverModal
         open={coverModalGameId != null}
         game={coverModalGame}
@@ -516,15 +569,29 @@ export function Dashboard() {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <div className="relative z-20 flex w-full min-w-0 items-stretch rounded-lg border border-border bg-card shadow-sm focus-within:ring-2 focus-within:ring-ring sm:max-w-md sm:flex-1">
-            <label className="flex min-w-0 flex-1">
+            <label className="relative flex min-w-0 flex-1">
               <span className="sr-only">Search</span>
               <input
-                type="search"
+                type="text"
+                role="searchbox"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search name, category, mechanic…"
-                className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
+                className={[
+                  "min-w-0 flex-1 border-0 bg-transparent py-2 pl-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0",
+                  query.length > 0 ? "pr-11" : "pr-3",
+                ].join(" ")}
               />
+              {query.length > 0 ? (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() => setQuery("")}
+                  className="absolute right-2 top-1/2 z-[2] flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <IconClearSearch className="h-4 w-4 shrink-0" />
+                </button>
+              ) : null}
             </label>
             <ShelfQuickFilterIcons
               games={data.games}
@@ -611,16 +678,19 @@ export function Dashboard() {
                 <GameCard
                   game={game}
                   onRequestCoverPicker={() => setCoverModalGameId(game.id)}
+                  onOpenFullscreen={() => setFullscreenGameId(game.id)}
                 />
               ) : shelfView === "compact" ? (
                 <GameCompactCard
                   game={game}
                   onRequestCoverPicker={() => setCoverModalGameId(game.id)}
+                  onOpenFullscreen={() => setFullscreenGameId(game.id)}
                 />
               ) : (
                 <GameGridThumb
                   game={game}
                   onRequestCoverPicker={() => setCoverModalGameId(game.id)}
+                  onOpenFullscreen={() => setFullscreenGameId(game.id)}
                 />
               )}
             </li>
