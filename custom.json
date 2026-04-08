@@ -1,0 +1,209 @@
+{
+  "games": [
+    {
+      "id": "173346",
+      "name": "7 Wonders Duel",
+      "description": "Two-player civilization card draft over three ages—win by military, science, or points."
+    },
+    {
+      "id": "342942",
+      "name": "Ark Nova",
+      "description": "Card-driven zoo: build enclosures, adopt animals, sponsors, and conservation appeal."
+    },
+    {
+      "id": "205637",
+      "name": "Arkham Horror: The Card Game",
+      "description": "Co-op Lovecraft living-card game: build decks and survive evolving campaign scenarios."
+    },
+    {
+      "id": "367396",
+      "name": "Avalon: Big Box",
+      "description": "Arthurian hidden roles—quest votes, Merlin’s knowledge, assassin’s last shot—plus extras."
+    },
+    {
+      "id": "230802",
+      "name": "Azul",
+      "description": "Draft factory tiles onto your wall—score patterns, avoid wasted pieces."
+    },
+    {
+      "id": "281549",
+      "name": "Beast",
+      "description": "One hidden beast vs hunters drafting actions to track, corner, and strike."
+    },
+    {
+      "id": "240980",
+      "name": "Blood on the Clocktower",
+      "description": "Storyteller-led social deduction: demon and minions hide in a bluffing village."
+    },
+    {
+      "id": "170216",
+      "name": "Blood Rage",
+      "description": "Vikings draft powers, fight for provinces, and score glory before Ragnarök ends the game."
+    },
+    {
+      "id": "224517",
+      "name": "Brass: Birmingham",
+      "description": "Industrial euro: canals and rails, coal and iron, timed markets in the Midlands."
+    },
+    {
+      "id": "822",
+      "name": "Carcassonne",
+      "description": "Lay landscape tiles and claim cities, roads, and farms with meeples."
+    },
+    {
+      "id": "13",
+      "name": "Catan",
+      "description": "Trade, roll resources, build roads and settlements—race to ten victory points.",
+      "friendOwner": "Zach"
+    },
+    {
+      "id": "205398",
+      "name": "Citadels",
+      "description": "Secret role each round—thief, assassin, king—then build the richest city."
+    },
+    {
+      "id": "178900",
+      "name": "Codenames",
+      "description": "Spymasters clue multiple words; teams avoid the assassin tile.",
+      "thumbnail": "https://cf.geekdo-images.com/F_KDEu0GjdClml8N7c8Imw__micro@2x/img/Dp7AyHzOLHaTkW6njrSCY5CZf_8=/fit-in/128x128/filters:strip_icc()/pic2582929.jpg",
+      "image": "https://cf.geekdo-images.com/F_KDEu0GjdClml8N7c8Imw__large/img/U_1slclNoTv-YoNRTvtM7LNOVOQ=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2582929.jpg"
+    },
+    {
+      "id": "225694",
+      "name": "Decrypto",
+      "description": "Teams encode secret words so allies get it but rivals intercept your pattern."
+    },
+    {
+      "id": "36218",
+      "name": "Dominion",
+      "description": "Buy kingdom cards into your deck—the original deck-building race."
+    },
+    {
+      "id": "199792",
+      "name": "Everdell",
+      "description": "Critters worker-place and play cards through seasons to build a woodland tableau."
+    },
+    {
+      "id": "220308",
+      "name": "Gaia Project",
+      "description": "Space Terra Mystica: terraform planet types, tech tracks, and area majorities."
+    },
+    {
+      "id": "366013",
+      "name": "Heat: Pedal to the Metal",
+      "description": "Hand-managed racing: play speed through corners without overheating—first across wins.",
+      "friendOwner": "Max"
+    },
+    {
+      "id": "148949",
+      "name": "Istanbul",
+      "description": "Wheel a merchant and assistants through the bazaar—first to five rubies wins."
+    },
+    {
+      "id": "127023",
+      "name": "Kemet",
+      "description": "Ancient Egypt brawl: troops, power tiles, and pyramids for battle VP."
+    },
+    {
+      "id": "297562",
+      "name": "Kemet: Blood and Sand",
+      "description": "Revised Kemet with new boards, streamlined battles, and refreshed powers."
+    },
+    {
+      "id": "257501",
+      "name": "KeyForge: Call of the Archons",
+      "description": "Every deck is unique; three Houses race to forge three keys in quick duels."
+    },
+    {
+      "id": "301607",
+      "name": "KeyForge: Mass Mutation",
+      "description": "KeyForge set with mutations and giants—still one-of-a-kind generated decks.",
+      "exclude": true
+    },
+    {
+      "id": "181304",
+      "name": "Mysterium",
+      "description": "Silent ghost sends vision art; psychics agree on killer, weapon, and room."
+    },
+    {
+      "id": "147949",
+      "name": "One Night Ultimate Werewolf",
+      "description": "Hidden roles, one round of night powers, then one vote—about ten minutes."
+    },
+    {
+      "id": "163166",
+      "name": "One Night Ultimate Werewolf: Daybreak",
+      "description": "Standalone one-night werewolf with extra roles for 3–7—same blitz social deduction.",
+      "exclude": true
+    },
+    {
+      "id": "300531",
+      "name": "Paleo",
+      "description": "Co-op stone-age deck: explore, gather, survive story beats to the finish."
+    },
+    {
+      "id": "30549",
+      "name": "Pandemic",
+      "description": "Co-op treat diseases, trade for cures, and stop outbreaks on the world map."
+    },
+    {
+      "id": "163412",
+      "name": "Patchwork",
+      "description": "Two-player Tetris-quilt on a time track—best fit and buttons win.",
+      "thumbnail": "https://cf.geekdo-images.com/wLW7pFn0--20lEizEz5p3A__micro@2x/img/ovhg53zRO6sDy6QNv1lY_0A8YsI=/fit-in/128x128/filters:strip_icc()/pic2270442.jpg",
+      "image": "https://cf.geekdo-images.com/wLW7pFn0--20lEizEz5p3A__large/img/WgyPrGWRHt0-C5O935uyJs0kMuQ=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic2270442.jpg"
+    },
+    {
+      "id": "3076",
+      "name": "Puerto Rico",
+      "description": "Role selection drives planting, producing, shipping, and building in the colony."
+    },
+    {
+      "id": "128882",
+      "name": "The Resistance: Avalon",
+      "description": "Good completes quests; evil sabotages—Merlin knows all but must dodge the assassin."
+    },
+    {
+      "id": "237182",
+      "name": "Root",
+      "description": "Asymmetric woodland factions—cats, birds, mice, and more—fight for the map."
+    },
+    {
+      "id": "169786",
+      "name": "Scythe",
+      "description": "1920s dieselpunk hexes: produce, deploy mechs, battle, and chase secret objectives.",
+      "friendOwner": "Jan"
+    },
+    {
+      "id": "162886",
+      "name": "Spirit Island",
+      "description": "Co-op spirits grow powers to wipe colonists and fear from the land."
+    },
+    {
+      "id": "430495",
+      "name": "Taco Tajm",
+      "description": "Party roll-and-move: card track of quick silly team challenges."
+    },
+    {
+      "id": "167791",
+      "name": "Terraforming Mars",
+      "description": "Corporations play cards and tiles to raise oxygen, heat, and oceans on Mars.",
+      "friendOwner": "Max"
+    },
+    {
+      "id": "182028",
+      "name": "Through the Ages: A New Story of Civilization",
+      "description": "Civ on cards from antiquity forward—tech, military, culture, and leaders."
+    },
+    {
+      "id": "274533",
+      "name": "Throw Throw Burrito",
+      "description": "Slap down matches, then toss foam burritos—dodgeball meets casual cards."
+    },
+    {
+      "id": "266192",
+      "name": "Wingspan",
+      "description": "Play birds into habitats—chain food, eggs, and powers for a gentle engine score."
+    }
+  ]
+}
