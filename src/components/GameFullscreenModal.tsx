@@ -9,6 +9,11 @@ import {
 import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import { formatPlayerCount } from "@/lib/formatPlayerCount";
 import { formatPlayTimeRange } from "@/lib/formatPlayTimeRange";
+import {
+  mechanicBucketDisplayLabels,
+  mechanicBucketIdsForGame,
+} from "@/lib/mechanicBuckets";
+import { rankDisplayName } from "@/lib/gameFilters";
 import type { BggGame } from "@/types/bgg";
 
 function formatWeight(w: number | null): string {
@@ -17,24 +22,38 @@ function formatWeight(w: number | null): string {
   return `${rounded} / 5`;
 }
 
+function formatMinAge(age: number | null): string {
+  if (age == null) return "—";
+  return `${age}+`;
+}
+
 function playersLine(game: BggGame): string {
   const raw = formatPlayerCount(game);
   if (raw === "—") return "—";
   return `${raw} players`;
 }
 
-function TagList({ items }: { items: string[] }) {
+type TagListItem = string | { text: string; bold?: boolean };
+
+function TagList({ items }: { items: TagListItem[] }) {
   if (items.length === 0) return null;
   return (
     <ul className="flex flex-wrap gap-1.5">
-      {items.map((item) => (
-        <li
-          key={item}
-          className="rounded-md border border-border bg-muted/50 px-2 py-1 text-sm text-foreground"
-        >
-          {item}
-        </li>
-      ))}
+      {items.map((item, i) => {
+        const text = typeof item === "string" ? item : item.text;
+        const bold = typeof item === "object" && item.bold;
+        return (
+          <li
+            key={`${text}-${i}`}
+            className={[
+              "rounded-md border border-border bg-muted/50 px-2 py-1 text-sm text-foreground",
+              bold ? "font-bold" : "",
+            ].join(" ")}
+          >
+            {text}
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -66,6 +85,19 @@ function StatBlock({
   );
 }
 
+const MODAL_DESCRIPTION_MAX_LEN = 128;
+
+/** Full custom text when set; otherwise BGG text truncated at 128 chars with "...". */
+function modalDescriptionText(game: BggGame): string | undefined {
+  const custom = game.customDescription?.trim();
+  const bgg = game.bggDescription?.trim();
+  if (custom) return custom;
+  if (!bgg) return undefined;
+  return bgg.length > MODAL_DESCRIPTION_MAX_LEN
+    ? `${bgg.slice(0, MODAL_DESCRIPTION_MAX_LEN)}...`
+    : bgg;
+}
+
 /** Renders stored description as up to three paragraphs when sentence boundaries are clear. */
 function DescriptionBody({ text }: { text: string }) {
   const parts = text
@@ -92,15 +124,35 @@ type Props = {
   open: boolean;
   game: BggGame | null;
   onClose: () => void;
-  /** Opens the Geekdo cover picker; shown when there is no cover or as an extra action. */
-  onRequestCoverPicker?: () => void;
 };
+
+function FullscreenDescriptionBlock({
+  game,
+  titleId,
+}: {
+  game: BggGame;
+  titleId: string;
+}) {
+  const text = modalDescriptionText(game);
+  if (!text) return null;
+
+  return (
+    <section aria-labelledby={`${titleId}-description`}>
+      <h3
+        id={`${titleId}-description`}
+        className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        Description
+      </h3>
+      <DescriptionBody text={text} />
+    </section>
+  );
+}
 
 export function GameFullscreenModal({
   open,
   game,
   onClose,
-  onRequestCoverPicker,
 }: Props) {
   const gameRef = useRef<BggGame | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -151,6 +203,16 @@ export function GameFullscreenModal({
 
   const src = displayGame.image || displayGame.thumbnail;
   const titleId = `game-fullscreen-title-${displayGame.id}`;
+  const playStyleLabels = mechanicBucketDisplayLabels(
+    mechanicBucketIdsForGame(displayGame),
+  );
+  const categoryTags: TagListItem[] = [
+    ...displayGame.ranks
+      .map((rank) => rankDisplayName(rank.name))
+      .filter(Boolean)
+      .map((text) => ({ text, bold: true as const })),
+    ...displayGame.categories,
+  ];
 
   return (
     <div
@@ -210,18 +272,6 @@ export function GameFullscreenModal({
                 <p className="text-base text-muted-foreground">
                   No cover image
                 </p>
-                {onRequestCoverPicker ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onRequestCoverPicker();
-                      onClose();
-                    }}
-                    className="rounded-lg border border-border bg-card px-4 py-2 text-base font-medium text-foreground shadow-sm transition-colors hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    Choose cover
-                  </button>
-                ) : null}
               </div>
             )}
           </div>
@@ -232,17 +282,10 @@ export function GameFullscreenModal({
               </p>
             ) : null}
 
-            {displayGame.description?.trim() ? (
-              <section aria-labelledby={`${titleId}-description`}>
-                <h3
-                  id={`${titleId}-description`}
-                  className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
-                >
-                  Description
-                </h3>
-                <DescriptionBody text={displayGame.description.trim()} />
-              </section>
-            ) : null}
+            <FullscreenDescriptionBlock
+              game={displayGame}
+              titleId={titleId}
+            />
 
             <section
               aria-label="Game stats"
@@ -262,28 +305,44 @@ export function GameFullscreenModal({
                     : undefined
                 }
               />
-              {displayGame.categories.length > 0 ? (
-                <div className="min-w-0" aria-labelledby={`${titleId}-categories`}>
-                  <h3
-                    id={`${titleId}-categories`}
-                    className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
-                  >
-                    Categories
-                  </h3>
-                  <div className="mt-0.5">
-                    <TagList items={displayGame.categories} />
-                  </div>
-                </div>
-              ) : null}
+              <StatBlock
+                label="Min age"
+                value={formatMinAge(displayGame.minAge)}
+              />
             </section>
 
-            {displayGame.geekdoImages != null &&
-            displayGame.geekdoImages.length > 0 ? (
-              <p className="text-sm text-muted-foreground">
-                {displayGame.geekdoImages.length} alternate cover
-                {displayGame.geekdoImages.length === 1 ? "" : "s"} in gallery
-                data
-              </p>
+            {categoryTags.length > 0 ? (
+              <section
+                className="min-w-0"
+                aria-labelledby={`${titleId}-categories`}
+              >
+                <h3
+                  id={`${titleId}-categories`}
+                  className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                >
+                  Categories
+                </h3>
+                <div className="mt-0.5">
+                  <TagList items={categoryTags} />
+                </div>
+              </section>
+            ) : null}
+
+            {playStyleLabels.length > 0 ? (
+              <section
+                className="min-w-0"
+                aria-labelledby={`${titleId}-play-style`}
+              >
+                <h3
+                  id={`${titleId}-play-style`}
+                  className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                >
+                  Play style
+                </h3>
+                <div className="mt-0.5">
+                  <TagList items={playStyleLabels} />
+                </div>
+              </section>
             ) : null}
 
             <p className="mt-auto pt-2">

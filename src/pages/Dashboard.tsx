@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 
 import { GameFiltersPanel } from "@/components/GameFiltersPanel";
 import { GameFullscreenModal } from "@/components/GameFullscreenModal";
-import { GeekdoCoverModal } from "@/components/GeekdoCoverModal";
 import { ShelfQuickFilterIcons } from "@/components/ShelfQuickFilterIcons";
 import { useGameFilters } from "@/context/game-filters-context";
 import { useGamesData } from "@/context/games-data-context";
@@ -13,7 +12,12 @@ import {
   weightFromSlider,
   type FilterState,
 } from "@/lib/gameFilters";
+import { rankDisplayName } from "@/lib/gameFilters";
 import { formatPlayTimeRange } from "@/lib/formatPlayTimeRange";
+import {
+  MECHANIC_BUCKET_LABELS,
+  mechanicBucketIdsForGame,
+} from "@/lib/mechanicBuckets";
 import type { BggGame } from "@/types/bgg";
 
 const SHELF_VIEW_STORAGE_KEY = "boardgames-shelf-view";
@@ -109,16 +113,19 @@ function ShelfViewSelector({
   value: ShelfViewMode;
   onChange: (mode: ShelfViewMode) => void;
 }) {
-  const modes: { mode: ShelfViewMode; label: string; Icon: typeof IconViewCard }[] =
-    [
-      { mode: "card", label: "Card view", Icon: IconViewCard },
-      {
-        mode: "compact",
-        label: "Compact cards",
-        Icon: IconViewCompactCard,
-      },
-      { mode: "grid", label: "Grid view (covers only)", Icon: IconViewGrid },
-    ];
+  const modes: {
+    mode: ShelfViewMode;
+    label: string;
+    Icon: typeof IconViewCard;
+  }[] = [
+    { mode: "card", label: "Card view", Icon: IconViewCard },
+    {
+      mode: "compact",
+      label: "Compact cards",
+      Icon: IconViewCompactCard,
+    },
+    { mode: "grid", label: "Grid view (covers only)", Icon: IconViewGrid },
+  ];
 
   return (
     <div
@@ -180,9 +187,7 @@ function FriendsGameOwnerBadge({
         className="pointer-events-none absolute right-1.5 top-1.5 z-10 max-w-[min(11rem,calc(100%-0.75rem))]"
         title={`${ownerName}'s copy`}
       >
-        <p
-          className="truncate rounded-md border border-primary/45 bg-card px-1.5 py-0.5 text-right text-[0.65rem] font-semibold leading-tight text-primary shadow-[0_2px_14px_rgb(0_0_0/0.55)] sm:text-xs"
-        >
+        <p className="truncate rounded-md border border-primary/45 bg-card px-1.5 py-0.5 text-right text-[0.65rem] font-semibold leading-tight text-primary shadow-[0_2px_14px_rgb(0_0_0/0.55)] sm:text-xs">
           <span className="sr-only">Owner: </span>
           {ownerName}&apos;s
         </p>
@@ -208,22 +213,28 @@ function activateOnKey(e: KeyboardEvent, action: () => void): void {
 
 function GameCoverBlock({
   game,
-  onRequestCoverPicker,
   className,
   onImageClick,
   onEmptyCoverPrimary,
+  onOpenFullscreen,
   compactPlaceholder = false,
+  preferThumbnail = false,
 }: {
   game: BggGame;
-  onRequestCoverPicker: () => void;
   className?: string;
   /** When set and a cover exists, image opens fullscreen (keyboard-activable). */
   onImageClick?: () => void;
-  /** When set, empty-cover tap runs this instead of the cover picker (e.g. grid → fullscreen). */
+  /** When set, empty-cover tap prefers this (e.g. grid → fullscreen). */
   onEmptyCoverPrimary?: () => void;
+  /** When no cover image, tap opens details (e.g. card layout). */
+  onOpenFullscreen?: () => void;
   compactPlaceholder?: boolean;
+  /** Dense grid tiles: load smaller BGG thumbnail first to save bandwidth. */
+  preferThumbnail?: boolean;
 }) {
-  const src = game.image || game.thumbnail;
+  const src = preferThumbnail
+    ? game.thumbnail || game.image
+    : game.image || game.thumbnail;
   const boxClass = className ?? "aspect-square w-full overflow-hidden bg-muted";
   if (src && onImageClick) {
     return (
@@ -255,28 +266,32 @@ function GameCoverBlock({
           className="h-full w-full object-cover"
           loading="lazy"
         />
-      ) : (
+      ) : (onEmptyCoverPrimary ?? onOpenFullscreen) ? (
         <button
           type="button"
-          onClick={onEmptyCoverPrimary ?? onRequestCoverPicker}
+          onClick={onEmptyCoverPrimary ?? onOpenFullscreen}
           className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-0.5 px-1 text-center text-base text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {compactPlaceholder ? (
             <>
               <span className="text-base leading-tight">No cover</span>
               <span className="text-base font-medium leading-tight text-primary">
-                {onEmptyCoverPrimary ? "Details" : "Choose"}
+                Details
               </span>
             </>
           ) : (
             <>
               <span>No cover yet</span>
               <span className="text-base font-medium text-primary">
-                Tap to choose
+                Tap for details
               </span>
             </>
           )}
         </button>
+      ) : (
+        <div className="flex h-full w-full flex-col items-center justify-center gap-0.5 px-1 text-center text-base text-muted-foreground">
+          <span>No cover</span>
+        </div>
       )}
     </div>
   );
@@ -284,11 +299,9 @@ function GameCoverBlock({
 
 function GameGridThumb({
   game,
-  onRequestCoverPicker,
   onOpenFullscreen,
 }: {
   game: BggGame;
-  onRequestCoverPicker: () => void;
   onOpenFullscreen: () => void;
 }) {
   const ownerName = friendsGameOwnerName(game);
@@ -303,8 +316,8 @@ function GameGridThumb({
       <div className="relative w-full">
         <GameCoverBlock
           game={game}
-          onRequestCoverPicker={onRequestCoverPicker}
           compactPlaceholder
+          preferThumbnail
           onImageClick={onOpenFullscreen}
           onEmptyCoverPrimary={onOpenFullscreen}
         />
@@ -318,11 +331,9 @@ function GameGridThumb({
 
 function GameCard({
   game,
-  onRequestCoverPicker,
   onOpenFullscreen,
 }: {
   game: BggGame;
-  onRequestCoverPicker: () => void;
   onOpenFullscreen: () => void;
 }) {
   const ownerName = friendsGameOwnerName(game);
@@ -331,8 +342,8 @@ function GameCard({
       <div className="relative w-full">
         <GameCoverBlock
           game={game}
-          onRequestCoverPicker={onRequestCoverPicker}
           onImageClick={onOpenFullscreen}
+          onOpenFullscreen={onOpenFullscreen}
         />
         {ownerName ? (
           <FriendsGameOwnerBadge variant="cover-top" ownerName={ownerName} />
@@ -383,11 +394,9 @@ function GameCard({
 
 function GameCompactCard({
   game,
-  onRequestCoverPicker,
   onOpenFullscreen,
 }: {
   game: BggGame;
-  onRequestCoverPicker: () => void;
   onOpenFullscreen: () => void;
 }) {
   const ownerName = friendsGameOwnerName(game);
@@ -396,9 +405,9 @@ function GameCompactCard({
       <div className="relative w-full">
         <GameCoverBlock
           game={game}
-          onRequestCoverPicker={onRequestCoverPicker}
           compactPlaceholder
           onImageClick={onOpenFullscreen}
+          onOpenFullscreen={onOpenFullscreen}
         />
         {ownerName ? (
           <FriendsGameOwnerBadge variant="cover-top" ownerName={ownerName} />
@@ -433,10 +442,7 @@ function GameCompactCard({
         <p className="mt-auto line-clamp-2 min-w-0 text-xs leading-tight text-muted-foreground">
           {formatPlayTimeRange(game)}
           {game.numPlays != null && game.numPlays > 0 ? (
-            <>
-              {" "}
-              · {game.numPlays} plays
-            </>
+            <> · {game.numPlays} plays</>
           ) : null}
         </p>
       </div>
@@ -445,7 +451,7 @@ function GameCompactCard({
 }
 
 export function Dashboard() {
-  const { status, errorMessage, data, setImagePick } = useGamesData();
+  const { status, errorMessage, data } = useGamesData();
   const {
     players,
     setPlayers,
@@ -461,11 +467,12 @@ export function Dashboard() {
     setMaxWeightActive,
     category,
     setCategory,
+    mechanicBucket,
+    setMechanicBucket,
     includeFriendsGames,
     setIncludeFriendsGames,
   } = useGameFilters();
   const [query, setQuery] = useState("");
-  const [coverModalGameId, setCoverModalGameId] = useState<string | null>(null);
   const [fullscreenGameId, setFullscreenGameId] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [shelfView, setShelfView] = useState<ShelfViewMode>(readShelfViewMode);
@@ -473,11 +480,6 @@ export function Dashboard() {
   useEffect(() => {
     localStorage.setItem(SHELF_VIEW_STORAGE_KEY, shelfView);
   }, [shelfView]);
-
-  const coverModalGame = useMemo(() => {
-    if (!coverModalGameId || !data) return null;
-    return data.games.find((g) => g.id === coverModalGameId) ?? null;
-  }, [coverModalGameId, data]);
 
   const fullscreenGame = useMemo(() => {
     if (!fullscreenGameId || !data) return null;
@@ -493,6 +495,7 @@ export function Dashboard() {
       minWeight: minWeightActive ? weightFromSlider(minWeightTenths) : null,
       maxWeight: maxWeightActive ? weightFromSlider(maxWeightTenths) : null,
       category,
+      mechanicBucket,
       includeFriendsGames,
     }),
     [
@@ -503,6 +506,7 @@ export function Dashboard() {
       maxWeightActive,
       maxWeightTenths,
       category,
+      mechanicBucket,
       includeFriendsGames,
     ],
   );
@@ -516,7 +520,13 @@ export function Dashboard() {
       return (
         g.name.toLowerCase().includes(q) ||
         g.categories.some((c) => c.toLowerCase().includes(q)) ||
-        g.mechanics.some((m) => m.toLowerCase().includes(q))
+        g.ranks.some((rank) =>
+          rankDisplayName(rank.name).toLowerCase().includes(q),
+        ) ||
+        g.mechanics.some((m) => m.toLowerCase().includes(q)) ||
+        mechanicBucketIdsForGame(g).some((id) =>
+          MECHANIC_BUCKET_LABELS[id].toLowerCase().includes(q),
+        )
       );
     });
   }, [status, data, query, includeFriendsGames]);
@@ -550,21 +560,6 @@ export function Dashboard() {
         open={fullscreenGameId != null}
         game={fullscreenGame}
         onClose={() => setFullscreenGameId(null)}
-        onRequestCoverPicker={
-          fullscreenGame
-            ? () => setCoverModalGameId(fullscreenGame.id)
-            : undefined
-        }
-      />
-      <GeekdoCoverModal
-        open={coverModalGameId != null}
-        game={coverModalGame}
-        onClose={() => setCoverModalGameId(null)}
-        onPick={(thumbnail, image) => {
-          if (coverModalGameId) {
-            setImagePick(coverModalGameId, { thumbnail, image });
-          }
-        }}
       />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
@@ -599,6 +594,8 @@ export function Dashboard() {
               setPlayers={setPlayers}
               category={category}
               setCategory={setCategory}
+              mechanicBucket={mechanicBucket}
+              setMechanicBucket={setMechanicBucket}
             />
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:justify-end">
@@ -625,10 +622,7 @@ export function Dashboard() {
             filtersOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
           ].join(" ")}
         >
-          <div
-            className="min-h-0 overflow-hidden"
-            aria-hidden={!filtersOpen}
-          >
+          <div className="min-h-0 overflow-hidden" aria-hidden={!filtersOpen}>
             <GameFiltersPanel
               games={data.games}
               matchCount={filtered.length}
@@ -647,6 +641,8 @@ export function Dashboard() {
               setMaxWeightActive={setMaxWeightActive}
               category={category}
               setCategory={setCategory}
+              mechanicBucket={mechanicBucket}
+              setMechanicBucket={setMechanicBucket}
               includeFriendsGames={includeFriendsGames}
               setIncludeFriendsGames={setIncludeFriendsGames}
             />
@@ -656,7 +652,7 @@ export function Dashboard() {
 
       {data.games.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-8 text-center text-muted-foreground">
-          No games in <code className="rounded bg-muted px-1">games.json</code>.
+          No games in <code className="rounded bg-muted px-1">bgg.json</code>.
           Sync your BGG collection to populate this list.
         </p>
       ) : (
@@ -677,19 +673,16 @@ export function Dashboard() {
               {shelfView === "card" ? (
                 <GameCard
                   game={game}
-                  onRequestCoverPicker={() => setCoverModalGameId(game.id)}
                   onOpenFullscreen={() => setFullscreenGameId(game.id)}
                 />
               ) : shelfView === "compact" ? (
                 <GameCompactCard
                   game={game}
-                  onRequestCoverPicker={() => setCoverModalGameId(game.id)}
                   onOpenFullscreen={() => setFullscreenGameId(game.id)}
                 />
               ) : (
                 <GameGridThumb
                   game={game}
-                  onRequestCoverPicker={() => setCoverModalGameId(game.id)}
                   onOpenFullscreen={() => setFullscreenGameId(game.id)}
                 />
               )}

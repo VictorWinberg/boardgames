@@ -1,6 +1,5 @@
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -8,22 +7,15 @@ import {
   type ReactNode,
 } from "react";
 
-import { patchGameCoverApiUrl } from "@/lib/patchGameCoverApiUrl";
+import { normalizeBggJsonPayload } from "@/lib/normalizeBggJson";
 import type { GamesPayload } from "@/types/bgg";
 
 type Status = "idle" | "loading" | "ok" | "error";
-
-export type CoverPick = {
-  thumbnail: string;
-  image: string;
-};
 
 type GamesDataContextValue = {
   status: Status;
   errorMessage: string | null;
   data: GamesPayload | null;
-  /** Writes `public/games.json` via Vite dev server; updates in-memory state. */
-  setImagePick: (gameId: string, pick: CoverPick) => Promise<void>;
 };
 
 const GamesDataContext = createContext<GamesDataContextValue | null>(null);
@@ -38,18 +30,28 @@ export function GamesDataProvider({ children }: { children: ReactNode }) {
     setStatus("loading");
     setErrorMessage(null);
 
-    const url = `${import.meta.env.BASE_URL}games.json`.replace(/\/{2,}/g, "/");
+    const base = import.meta.env.BASE_URL;
+    const bggUrl = `${base}bgg.json`.replace(/\/{2,}/g, "/");
+    const customUrl = `${base}custom.json`.replace(/\/{2,}/g, "/");
 
-    fetch(url)
-      .then((res) => {
+    Promise.all([
+      fetch(bggUrl).then((res) => {
         if (!res.ok) throw new Error(`Failed to load games (${res.status})`);
-        return res.json() as Promise<GamesPayload>;
-      })
-      .then((payload) => {
+        return res.json() as Promise<unknown>;
+      }),
+      fetch(customUrl)
+        .then((res) => (res.ok ? res.json() : null))
+        .catch(() => null),
+    ])
+      .then(([bggRaw, customRaw]) => {
         if (cancelled) return;
-        if (!payload || !Array.isArray(payload.games)) {
+        const payload = normalizeBggJsonPayload(
+          bggRaw,
+          customRaw ?? undefined
+        );
+        if (!payload) {
           setStatus("error");
-          setErrorMessage("Invalid games.json format");
+          setErrorMessage("Invalid bgg.json format");
           return;
         }
         setData(payload);
@@ -68,62 +70,13 @@ export function GamesDataProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const setImagePick = useCallback(async (gameId: string, pick: CoverPick) => {
-    if (!import.meta.env.DEV) {
-      throw new Error(
-        "Saving a cover to games.json only works with npm run dev. Deployed sites are static — edit public/games.json in the repo instead."
-      );
-    }
-
-    const res = await fetch(patchGameCoverApiUrl(), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        gameId,
-        thumbnail: pick.thumbnail,
-        image: pick.image,
-      }),
-    });
-
-    let errBody: { error?: string } = {};
-    try {
-      errBody = (await res.json()) as { error?: string };
-    } catch {
-      /* ignore */
-    }
-
-    if (!res.ok) {
-      throw new Error(errBody.error ?? `Save failed (${res.status})`);
-    }
-
-    const thumb = pick.thumbnail.trim() || null;
-    const img = pick.image.trim() || null;
-
-    setData((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        games: prev.games.map((g) => {
-          if (String(g.id) !== String(gameId)) return g;
-          const { geekdoImages: _, ...rest } = g;
-          return {
-            ...rest,
-            thumbnail: thumb,
-            image: img,
-          };
-        }),
-      };
-    });
-  }, []);
-
   const value = useMemo(
     (): GamesDataContextValue => ({
       status,
       errorMessage,
       data,
-      setImagePick,
     }),
-    [status, errorMessage, data, setImagePick]
+    [status, errorMessage, data]
   );
 
   return (

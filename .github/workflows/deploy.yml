@@ -35,9 +35,9 @@ jobs:
           BGG_ACCESS_TOKEN: ${{ secrets.BGG_ACCESS_TOKEN }}
         run: |
           if [ -z "$BGG_USERNAME" ] || [ -z "$BGG_ACCESS_TOKEN" ]; then
-            echo "BGG_USERNAME or BGG_ACCESS_TOKEN not set; using existing public/games.json"
+            echo "BGG_USERNAME or BGG_ACCESS_TOKEN not set; using existing public/bgg.json"
           else
-            npm run sync:bgg
+            npm run fetch:bgg
           fi
 
       - name: Build project

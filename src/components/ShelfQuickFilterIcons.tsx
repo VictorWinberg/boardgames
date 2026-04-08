@@ -2,15 +2,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   PLAYER_SLIDER_MAX,
-  collectCategories,
+  collectRankCategories,
+  collectMechanicBuckets,
   filterPillClass,
   formatPlayerFilterLabel,
+  MECHANIC_BUCKET_LABELS,
   playerCountToSliderStep,
   sliderStepToPlayerCount,
+  type MechanicBucketId,
 } from "@/lib/gameFilters";
 import type { BggGame } from "@/types/bgg";
 
-type OpenKind = "players" | "category" | null;
+type OpenKind = "players" | "category" | "mechanic" | null;
 
 function IconUsers({ className }: { className?: string }) {
   return (
@@ -50,6 +53,31 @@ function IconTag({ className }: { className?: string }) {
   );
 }
 
+function IconSliders({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <line x1="4" y1="21" x2="4" y2="14" />
+      <line x1="4" y1="10" x2="4" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12" y2="3" />
+      <line x1="20" y1="21" x2="20" y2="16" />
+      <line x1="20" y1="12" x2="20" y2="3" />
+      <line x1="1" y1="14" x2="7" y2="14" />
+      <line x1="9" y1="8" x2="15" y2="8" />
+      <line x1="17" y1="16" x2="23" y2="16" />
+    </svg>
+  );
+}
+
 function IconX({ className }: { className?: string }) {
   return (
     <svg
@@ -80,6 +108,8 @@ export type ShelfQuickFilterIconsProps = {
   setPlayers: (n: number | null) => void;
   category: string | null;
   setCategory: (c: string | null) => void;
+  mechanicBucket: MechanicBucketId | null;
+  setMechanicBucket: (b: MechanicBucketId | null) => void;
 };
 
 export function ShelfQuickFilterIcons({
@@ -88,11 +118,17 @@ export function ShelfQuickFilterIcons({
   setPlayers,
   category,
   setCategory,
+  mechanicBucket,
+  setMechanicBucket,
 }: ShelfQuickFilterIconsProps) {
   const [open, setOpen] = useState<OpenKind>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const categoryOptions = useMemo(() => collectCategories(games), [games]);
+  const categoryOptions = useMemo(() => collectRankCategories(games), [games]);
+  const mechanicOptions = useMemo(
+    () => collectMechanicBuckets(games),
+    [games],
+  );
 
   useEffect(() => {
     if (open == null) return;
@@ -120,6 +156,9 @@ export function ShelfQuickFilterIcons({
 
   const playersActive = players != null;
   const categoryActive = category != null;
+  const mechanicActive = mechanicBucket != null;
+  const mechanicLabel =
+    mechanicBucket != null ? MECHANIC_BUCKET_LABELS[mechanicBucket] : "";
 
   return (
     <div
@@ -291,6 +330,96 @@ export function ShelfQuickFilterIcons({
           </div>
         ) : null}
       </div>
+
+      {mechanicOptions.length > 0 ? (
+        <div className="relative shrink-0">
+          <button
+            type="button"
+            className={[
+              triggerBase,
+              mechanicActive
+                ? "max-w-[10rem] min-w-0 justify-start pl-1 pr-3.5 text-primary"
+                : "min-w-8 justify-center px-1",
+              open === "mechanic" ? "bg-muted/80 text-foreground" : "",
+            ].join(" ")}
+            aria-label={
+              mechanicActive
+                ? `Mechanics: ${mechanicLabel}. Change mechanics filter`
+                : "Filter by mechanics"
+            }
+            aria-expanded={open === "mechanic"}
+            aria-haspopup="listbox"
+            aria-controls="shelf-quick-mechanic-list"
+            title={mechanicActive ? mechanicLabel : undefined}
+            onClick={() =>
+              setOpen((o) => (o === "mechanic" ? null : "mechanic"))
+            }
+          >
+            <IconSliders className="h-3.5 w-3.5 shrink-0" />
+            {mechanicActive ? (
+              <span className="min-w-0 flex-1 truncate text-left text-[0.6875rem] font-medium leading-tight text-current">
+                {mechanicLabel}
+              </span>
+            ) : null}
+          </button>
+          {mechanicActive ? (
+            <button
+              type="button"
+              className={clearOnLabelClass}
+              aria-label="Clear mechanics filter"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setMechanicBucket(null);
+                setOpen((o) => (o === "mechanic" ? null : o));
+              }}
+            >
+              <IconX className="h-2 w-2 stroke-[2.5]" />
+            </button>
+          ) : null}
+          {open === "mechanic" ? (
+            <div
+              id="shelf-quick-mechanic-list"
+              role="listbox"
+              aria-label="Mechanics"
+              className="absolute right-0 z-50 mt-1 max-h-80 w-[min(100vw-2rem,20rem)] overflow-y-auto rounded-md border border-border bg-card p-1.5 shadow-lg"
+            >
+              <div className="flex flex-col gap-1">
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={mechanicBucket === null}
+                  onClick={() => {
+                    setMechanicBucket(null);
+                    setOpen(null);
+                  }}
+                  className={`${filterPillClass(mechanicBucket === null)} flex w-full justify-start`}
+                >
+                  Any
+                </button>
+                {mechanicOptions.map((id) => {
+                  const selected = mechanicBucket === id;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      role="option"
+                      aria-selected={selected}
+                      onClick={() => {
+                        setMechanicBucket(id);
+                        setOpen(null);
+                      }}
+                      className={`${filterPillClass(selected)} flex w-full justify-start text-left`}
+                    >
+                      {MECHANIC_BUCKET_LABELS[id]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

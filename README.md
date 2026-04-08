@@ -12,7 +12,7 @@ Data comes from a generated `public/games.json` file. The BoardGameGeek API is n
 npm install
 cp .env.example .env
 # Set BGG_USERNAME and BGG_ACCESS_TOKEN in .env, then:
-npm run sync:bgg
+npm run fetch:bgg
 npm run dev
 ```
 
@@ -23,14 +23,14 @@ Open the URL Vite prints (port **8080** by default). Keep `VITE_BASE_URL=/` in `
 ```bash
 export BGG_USERNAME=your_bgg_username
 export BGG_ACCESS_TOKEN=your_token_from_bgg_applications
-npm run sync:bgg
+npm run fetch:bgg
 ```
 
 This writes [`public/games.json`](public/games.json). Commit the updated file if you want the collection versioned without CI secrets.
 
 ### Cover images
 
-1. **Official art (recommended):** `npm run sync:bgg` sets each game’s `thumbnail` and `image` from the XML **`/thing`** response (BGG’s primary image). Re-running sync **keeps** existing `geekdoImages` arrays when the same game ids are present.
+1. **Official art (recommended):** `npm run fetch:bgg` sets each game’s `thumbnail` and `image` from the XML **`/thing`** response (BGG’s primary image). Re-running sync **keeps** existing `geekdoImages` arrays when the same game ids are present.
 
 2. **Geekdo gallery (all user photos, no guessing):** [`scripts/fill-images-geekdo.mjs`](scripts/fill-images-geekdo.mjs) downloads gallery images for **one** game (BGG thing `id`) into that game’s `geekdoImages` in [`public/games.json`](public/games.json). It does **not** pick a cover.
 
@@ -65,7 +65,7 @@ Output is in `dist/`.
 3. In **Settings → Pages**, set **Source** to the **`gh-pages`** branch (created by the deploy action).
 4. If your repository name is not `boardgames`, change `VITE_BASE_URL` in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) to `/<your-repo-name>/`.
 
-The workflow (see [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) installs dependencies, optionally runs `npm run sync:bgg`, builds with `VITE_BASE_URL`, and publishes `dist/` with [peaceiris/actions-gh-pages](https://github.com/peaceiris/actions-gh-pages).
+The workflow (see [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) installs dependencies, optionally runs `npm run fetch:bgg`, builds with `VITE_BASE_URL`, and publishes `dist/` with [peaceiris/actions-gh-pages](https://github.com/peaceiris/actions-gh-pages).
 
 **SPA routing** under a project URL uses the [spa-github-pages](https://github.com/rafgraph/spa-github-pages) pattern: redirect snippet in [`index.html`](index.html) and [`public/404.html`](public/404.html) with `pathSegmentsToKeep = 1`.
 

@@ -16,8 +16,12 @@ import {
   PLAYER_OPTIONS,
   WEIGHT_FILTER_SLIDER_MAX,
 } from "@/lib/gameFilters";
+import {
+  MECHANIC_BUCKET_ORDER,
+  type MechanicBucketId,
+} from "@/lib/mechanicBuckets";
 
-const FILTERS_STORAGE_KEY = "boardgames:game-filters:v1";
+const FILTERS_STORAGE_KEY = "boardgames:game-filters:v2";
 
 type PersistedGameFilters = {
   players: number | null;
@@ -27,6 +31,7 @@ type PersistedGameFilters = {
   minWeightActive: boolean;
   maxWeightActive: boolean;
   category: string | null;
+  mechanicBucket: MechanicBucketId | null;
   includeFriendsGames: boolean;
 };
 
@@ -38,8 +43,15 @@ const DEFAULT_FILTERS: PersistedGameFilters = {
   minWeightActive: false,
   maxWeightActive: false,
   category: null,
+  mechanicBucket: null,
   includeFriendsGames: false,
 };
+
+const LEGACY_FILTERS_STORAGE_KEY = "boardgames:game-filters:v1";
+
+function isMechanicBucketId(v: string): v is MechanicBucketId {
+  return (MECHANIC_BUCKET_ORDER as readonly string[]).includes(v);
+}
 
 /** True when every field matches the default filter state (Clear filters would be a no-op). */
 export function filtersEqualToDefaults(f: PersistedGameFilters): boolean {
@@ -51,6 +63,7 @@ export function filtersEqualToDefaults(f: PersistedGameFilters): boolean {
     f.minWeightActive === DEFAULT_FILTERS.minWeightActive &&
     f.maxWeightActive === DEFAULT_FILTERS.maxWeightActive &&
     f.category === DEFAULT_FILTERS.category &&
+    f.mechanicBucket === DEFAULT_FILTERS.mechanicBucket &&
     f.includeFriendsGames === DEFAULT_FILTERS.includeFriendsGames
   );
 }
@@ -106,6 +119,15 @@ function parseStoredFilters(raw: string | null): PersistedGameFilters {
     else if (typeof o.category === "string" && o.category.trim() !== "")
       category = o.category;
 
+    let mechanicBucket: MechanicBucketId | null = DEFAULT_FILTERS.mechanicBucket;
+    if (o.mechanicBucket === null) mechanicBucket = null;
+    else if (
+      typeof o.mechanicBucket === "string" &&
+      isMechanicBucketId(o.mechanicBucket)
+    ) {
+      mechanicBucket = o.mechanicBucket;
+    }
+
     const includeFriendsGames =
       typeof o.includeFriendsGames === "boolean"
         ? o.includeFriendsGames
@@ -119,6 +141,7 @@ function parseStoredFilters(raw: string | null): PersistedGameFilters {
       minWeightActive,
       maxWeightActive,
       category,
+      mechanicBucket,
       includeFriendsGames,
     };
   } catch {
@@ -128,7 +151,11 @@ function parseStoredFilters(raw: string | null): PersistedGameFilters {
 
 function readInitialFilters(): PersistedGameFilters {
   if (typeof window === "undefined") return { ...DEFAULT_FILTERS };
-  return parseStoredFilters(localStorage.getItem(FILTERS_STORAGE_KEY));
+  const rawV2 = localStorage.getItem(FILTERS_STORAGE_KEY);
+  if (rawV2 != null) return parseStoredFilters(rawV2);
+  const rawV1 = localStorage.getItem(LEGACY_FILTERS_STORAGE_KEY);
+  if (rawV1 != null) return parseStoredFilters(rawV1);
+  return { ...DEFAULT_FILTERS };
 }
 
 export type GameFiltersContextValue = {
@@ -146,6 +173,8 @@ export type GameFiltersContextValue = {
   setMaxWeightActive: Dispatch<SetStateAction<boolean>>;
   category: string | null;
   setCategory: Dispatch<SetStateAction<string | null>>;
+  mechanicBucket: MechanicBucketId | null;
+  setMechanicBucket: Dispatch<SetStateAction<MechanicBucketId | null>>;
   includeFriendsGames: boolean;
   setIncludeFriendsGames: Dispatch<SetStateAction<boolean>>;
   /** Resets all filters to defaults (same as a fresh session). */
@@ -170,6 +199,9 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
   const [minWeightActive, setMinWeightActive] = useState(s0.minWeightActive);
   const [maxWeightActive, setMaxWeightActive] = useState(s0.maxWeightActive);
   const [category, setCategory] = useState<string | null>(s0.category);
+  const [mechanicBucket, setMechanicBucket] = useState<MechanicBucketId | null>(
+    s0.mechanicBucket,
+  );
   const [includeFriendsGames, setIncludeFriendsGames] = useState(
     s0.includeFriendsGames,
   );
@@ -182,6 +214,7 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
     setMinWeightActive(DEFAULT_FILTERS.minWeightActive);
     setMaxWeightActive(DEFAULT_FILTERS.maxWeightActive);
     setCategory(DEFAULT_FILTERS.category);
+    setMechanicBucket(DEFAULT_FILTERS.mechanicBucket);
     setIncludeFriendsGames(DEFAULT_FILTERS.includeFriendsGames);
   }, []);
 
@@ -194,6 +227,7 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
       minWeightActive,
       maxWeightActive,
       category,
+      mechanicBucket,
       includeFriendsGames,
     };
     try {
@@ -209,6 +243,7 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
     minWeightActive,
     maxWeightActive,
     category,
+    mechanicBucket,
     includeFriendsGames,
   ]);
 
@@ -228,6 +263,8 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
       setMaxWeightActive,
       category,
       setCategory,
+      mechanicBucket,
+      setMechanicBucket,
       includeFriendsGames,
       setIncludeFriendsGames,
       clearFilters,
@@ -240,6 +277,7 @@ export function GameFiltersProvider({ children }: { children: ReactNode }) {
       minWeightActive,
       maxWeightActive,
       category,
+      mechanicBucket,
       includeFriendsGames,
       clearFilters,
     ],

@@ -6,14 +6,17 @@ import {
   MAX_TIME_BY_INDEX,
   PLAYER_SLIDER_MAX,
   WEIGHT_FILTER_SLIDER_MAX,
-  collectCategories,
+  collectRankCategories,
+  collectMechanicBuckets,
   filterPillClass,
   formatPlayerFilterLabel,
+  MECHANIC_BUCKET_LABELS,
   playerCountToSliderStep,
   sliderStepToPlayerCount,
   weightFilterSliderStep,
   weightFilterStepToTenths,
   weightFromSlider,
+  type MechanicBucketId,
 } from "@/lib/gameFilters";
 import { bggWeightTextClass } from "@/lib/bggWeightColor";
 import type { BggGame } from "@/types/bgg";
@@ -42,6 +45,8 @@ export type GameFiltersPanelProps = {
   setMaxWeightActive: (v: boolean) => void;
   category: string | null;
   setCategory: (c: string | null) => void;
+  mechanicBucket: MechanicBucketId | null;
+  setMechanicBucket: (b: MechanicBucketId | null) => void;
   includeFriendsGames: boolean;
   setIncludeFriendsGames: (v: boolean) => void;
 };
@@ -64,10 +69,13 @@ export function GameFiltersPanel({
   setMaxWeightActive,
   category,
   setCategory,
+  mechanicBucket,
+  setMechanicBucket,
   includeFriendsGames,
   setIncludeFriendsGames,
 }: GameFiltersPanelProps) {
-  const categoryOptions = collectCategories(games);
+  const categoryOptions = collectRankCategories(games);
+  const mechanicOptions = collectMechanicBuckets(games);
   const maxTimeLabel =
     maxTimeIndex === 0
       ? "No limit"
@@ -81,6 +89,10 @@ export function GameFiltersPanel({
     ? `${weightFromSlider(maxWeightTenths).toFixed(1)} / 5`
     : "Any";
   const categoryValueLabel = category ?? "Any";
+  const mechanicValueLabel =
+    mechanicBucket != null
+      ? MECHANIC_BUCKET_LABELS[mechanicBucket]
+      : "Any";
   const friendsGamesValueLabel = includeFriendsGames ? "On" : "Off";
   const minWeightSliderStep = weightFilterSliderStep(
     minWeightActive,
@@ -100,6 +112,7 @@ export function GameFiltersPanel({
     minWeightActive,
     maxWeightActive,
     category,
+    mechanicBucket,
     includeFriendsGames,
   });
 
@@ -182,6 +195,55 @@ export function GameFiltersPanel({
                   className={filterPillClass(selected)}
                 >
                   {c}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
+      {mechanicOptions.length > 0 ? (
+        <div className={FILTER_ROW_GRID}>
+          <div className={filterLabelValueStack}>
+            <span
+              className="text-base font-medium text-foreground"
+              id="filter-mechanic-label"
+            >
+              Mechanics
+            </span>
+            <span
+              className="min-w-0 truncate text-left text-xs leading-tight text-muted-foreground sm:text-base"
+              title={mechanicValueLabel}
+            >
+              {mechanicValueLabel}
+            </span>
+          </div>
+          <div
+            className="flex min-w-0 flex-wrap gap-1.5"
+            role="radiogroup"
+            aria-labelledby="filter-mechanic-label"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={mechanicBucket === null}
+              onClick={() => setMechanicBucket(null)}
+              className={filterPillClass(mechanicBucket === null)}
+            >
+              Any
+            </button>
+            {mechanicOptions.map((id) => {
+              const selected = mechanicBucket === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => setMechanicBucket(id)}
+                  className={filterPillClass(selected)}
+                >
+                  {MECHANIC_BUCKET_LABELS[id]}
                 </button>
               );
             })}

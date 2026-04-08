@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { GameFiltersPanel } from "@/components/GameFiltersPanel";
-import { GeekdoCoverModal } from "@/components/GeekdoCoverModal";
 import { useGameFilters } from "@/context/game-filters-context";
 import { useGamesData } from "@/context/games-data-context";
 import { bggBoardGameUrl } from "@/lib/bggGameUrl";
@@ -20,6 +19,10 @@ import {
   oracleFullscreenCardClasses,
   oracleFullscreenShellClasses,
 } from "@/lib/fullscreenMotion";
+import {
+  mechanicBucketDisplayLabels,
+  mechanicBucketIdsForGame,
+} from "@/lib/mechanicBuckets";
 import type { BggGame } from "@/types/bgg";
 
 function pickRandom<T>(items: T[]): T | null {
@@ -82,13 +85,10 @@ function TagList({ items }: { items: string[] }) {
   );
 }
 
-function OraclePickedHeroBody({
-  picked,
-  onChooseCover,
-}: {
-  picked: BggGame;
-  onChooseCover: () => void;
-}) {
+function OraclePickedHeroBody({ picked }: { picked: BggGame }) {
+  const playStyleLabels = mechanicBucketDisplayLabels(
+    mechanicBucketIdsForGame(picked),
+  );
   return (
     <>
       <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2 px-3 py-2 sm:relative sm:z-auto sm:border-b sm:border-border sm:bg-card sm:px-5 sm:py-3">
@@ -118,13 +118,6 @@ function OraclePickedHeroBody({
           ) : (
             <div className="flex flex-col items-center gap-3 px-2 text-center">
               <p className="text-base text-muted-foreground">No cover image</p>
-              <button
-                type="button"
-                onClick={onChooseCover}
-                className="rounded-lg border border-border bg-card px-4 py-2 text-base font-medium text-foreground shadow-sm transition-colors hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Choose cover
-              </button>
             </div>
           )}
         </div>
@@ -185,11 +178,39 @@ function OraclePickedHeroBody({
             ) : null}
           </section>
 
-          {picked.geekdoImages != null && picked.geekdoImages.length > 0 ? (
-            <p className="text-sm text-muted-foreground">
-              {picked.geekdoImages.length} alternate cover
-              {picked.geekdoImages.length === 1 ? "" : "s"} in gallery data
-            </p>
+          {picked.mechanics.length > 0 ? (
+            <>
+              {playStyleLabels.length > 0 ? (
+                <section
+                  className="min-w-0"
+                  aria-labelledby="oracle-picked-play-style"
+                >
+                  <h3
+                    id="oracle-picked-play-style"
+                    className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
+                    Play style
+                  </h3>
+                  <div className="mt-0.5">
+                    <TagList items={playStyleLabels} />
+                  </div>
+                </section>
+              ) : null}
+              <section
+                className="min-w-0"
+                aria-labelledby="oracle-picked-mechanics"
+              >
+                <h3
+                  id="oracle-picked-mechanics"
+                  className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                >
+                  BGG mechanics
+                </h3>
+                <div className="mt-0.5">
+                  <TagList items={picked.mechanics} />
+                </div>
+              </section>
+            </>
           ) : null}
 
           <p className="mt-auto pt-2">
@@ -209,7 +230,7 @@ function OraclePickedHeroBody({
 }
 
 export function RandomPicker() {
-  const { status, errorMessage, data, setImagePick } = useGamesData();
+  const { status, errorMessage, data } = useGamesData();
   const {
     players,
     setPlayers,
@@ -225,12 +246,13 @@ export function RandomPicker() {
     setMaxWeightActive,
     category,
     setCategory,
+    mechanicBucket,
+    setMechanicBucket,
     includeFriendsGames,
     setIncludeFriendsGames,
   } = useGameFilters();
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
-  const [coverModalOpen, setCoverModalOpen] = useState(false);
 
   const picked = useMemo(() => {
     if (!pickedId || !data) return null;
@@ -246,6 +268,7 @@ export function RandomPicker() {
       minWeight: minWeightActive ? weightFromSlider(minWeightTenths) : null,
       maxWeight: maxWeightActive ? weightFromSlider(maxWeightTenths) : null,
       category,
+      mechanicBucket,
       includeFriendsGames,
     }),
     [
@@ -256,6 +279,7 @@ export function RandomPicker() {
       maxWeightActive,
       maxWeightTenths,
       category,
+      mechanicBucket,
       includeFriendsGames,
     ],
   );
@@ -276,12 +300,7 @@ export function RandomPicker() {
     const g = pickRandom(pool);
     setPickedId(g?.id ?? null);
     setFiltersCollapsed(true);
-    setCoverModalOpen(false);
   }, [pool]);
-
-  useEffect(() => {
-    setCoverModalOpen(false);
-  }, [pickedId]);
 
   const expandFilters = useCallback(() => {
     setFiltersCollapsed(false);
@@ -363,16 +382,6 @@ export function RandomPicker() {
 
   return (
     <>
-      <GeekdoCoverModal
-        open={coverModalOpen && picked != null}
-        game={picked}
-        onClose={() => setCoverModalOpen(false)}
-        onPick={(thumbnail, image) => {
-          if (picked) {
-            setImagePick(picked.id, { thumbnail, image });
-          }
-        }}
-      />
       {heroMounted && heroGame ? (
         <div
           className={[
@@ -405,10 +414,7 @@ export function RandomPicker() {
                 oracleFullscreenCardClasses(heroEntered),
               ].join(" ")}
             >
-              <OraclePickedHeroBody
-                picked={heroGame}
-                onChooseCover={() => setCoverModalOpen(true)}
-              />
+              <OraclePickedHeroBody picked={heroGame} />
             </article>
           </div>
           <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[99] flex justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
@@ -454,6 +460,8 @@ export function RandomPicker() {
               setMaxWeightActive={setMaxWeightActive}
               category={category}
               setCategory={setCategory}
+              mechanicBucket={mechanicBucket}
+              setMechanicBucket={setMechanicBucket}
               includeFriendsGames={includeFriendsGames}
               setIncludeFriendsGames={setIncludeFriendsGames}
             />

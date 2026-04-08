@@ -1,4 +1,38 @@
+import { bggSubdomainLabel } from "@/lib/bggSubdomainRanks";
+import type { MechanicBucketId } from "@/lib/mechanicBuckets";
+import { gameMatchesMechanicBucket } from "@/lib/mechanicBuckets";
 import type { BggGame } from "@/types/bgg";
+
+/** Short label for a BGG subdomain rank from API `name` (hardcoded map; not friendlyName). */
+export function rankDisplayName(rankName: string): string {
+  return bggSubdomainLabel(rankName);
+}
+
+/**
+ * Collects all unique rank display names from games, sorted alphabetically.
+ */
+export function collectRankCategories(games: BggGame[]): string[] {
+  const rankSet = new Set<string>();
+  for (const game of games) {
+    for (const rank of game.ranks) {
+      const displayName = rankDisplayName(rank.name);
+      if (displayName) rankSet.add(displayName);
+    }
+  }
+  return Array.from(rankSet).sort();
+}
+
+/**
+ * Checks if a game has a specific rank category.
+ */
+export function gameHasRankCategory(
+  game: BggGame,
+  categoryDisplayName: string,
+): boolean {
+  return game.ranks.some(
+    (rank) => rankDisplayName(rank.name) === categoryDisplayName,
+  );
+}
 
 export type FilterState = {
   players: number | null;
@@ -6,11 +40,13 @@ export type FilterState = {
   minWeight: number | null;
   maxWeight: number | null;
   category: string | null;
-  /** When false, games with `owner` set are excluded */
+  /** One of ten grouped mechanic families; matches if any BGG mechanic maps to it */
+  mechanicBucket: MechanicBucketId | null;
+  /** When false, games with `owner` set (from custom `friendOwner`) are excluded */
   includeFriendsGames: boolean;
 };
 
-/** True if this row is someone else’s game (has a non-empty `owner`). */
+/** True if this row is a friend’s copy (`owner` from `custom.json` `friendOwner`). */
 export function isFriendsOwnedGame(g: BggGame): boolean {
   return typeof g.owner === "string" && g.owner.trim() !== "";
 }
@@ -44,7 +80,16 @@ export function matchesFilters(g: BggGame, f: FilterState): boolean {
     }
   }
 
-  if (f.category != null && !g.categories.includes(f.category)) {
+  if (f.category != null) {
+    if (!gameHasRankCategory(g, f.category)) {
+      return false;
+    }
+  }
+
+  if (
+    f.mechanicBucket != null &&
+    !gameMatchesMechanicBucket(g, f.mechanicBucket)
+  ) {
     return false;
   }
 
@@ -116,15 +161,6 @@ export function weightFilterStepToTenths(step: number): number {
   return step + 9;
 }
 
-export function collectCategories(games: BggGame[]): string[] {
-  const set = new Set<string>();
-  for (const g of games) {
-    for (const c of g.categories) {
-      set.add(c);
-    }
-  }
-  return [...set].sort((a, b) => a.localeCompare(b));
-}
 
 export function filterPillClass(selected: boolean): string {
   return [
@@ -134,3 +170,9 @@ export function filterPillClass(selected: boolean): string {
       : "border-border bg-background text-muted-foreground hover:border-muted-foreground/40 hover:text-foreground",
   ].join(" ");
 }
+
+export type { MechanicBucketId } from "@/lib/mechanicBuckets";
+export {
+  collectMechanicBuckets,
+  MECHANIC_BUCKET_LABELS,
+} from "@/lib/mechanicBuckets";
